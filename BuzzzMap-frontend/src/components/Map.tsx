@@ -38,7 +38,7 @@ const Map: React.FC<MapProps> = ({
     useEffect(() => {
         const initMap = async () => {
             const loader = new Loader({
-                apiKey: process.env.API_KEY || "",
+                apiKey: import.meta.env.VITE_API_KEY || "",
                 version: "weekly",
             });
 

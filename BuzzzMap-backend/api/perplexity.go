@@ -21,11 +21,11 @@ type PerplexityResponse struct {
 }
 
 type Item struct {
-	Name     string `json:"name"`
-	Location string `json:"location"`
-	Rank     int32    `json:"rank"`
-	EndTimestamp int32 `json:"end_timestamp"`
-	IncreasePercentage int32 `json:"increase_percentage"`
+	Name               string `json:"name"`
+	Location           string `json:"location"`
+	Rank               int32  `json:"rank"`
+	EndTimestamp       int32  `json:"end_timestamp"`
+	IncreasePercentage int32  `json:"increase_percentage"`
 }
 
 func (a *Api) CallPerplexityAPI(query []TrendingSearch) ([]Item, error) {
@@ -41,7 +41,7 @@ func (a *Api) CallPerplexityAPI(query []TrendingSearch) ([]Item, error) {
 		log.Fatal("Error loading .env file")
 	}
 
-	apiKey := os.Getenv("API_KEY")
+	apiKey := os.Getenv("VITE_API_KEY")
 
 	// HTTPクライアントを作成
 	client := &http.Client{}

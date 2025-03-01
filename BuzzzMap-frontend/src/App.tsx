@@ -9,10 +9,10 @@ import RestaurantList from './components/RestaurantList';
 import TrendingList from './components/TrendingList';
 import PhoneFrame from './components/PhoneFrame';
 import TabBar from './components/TabBar';
-import { Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { Info, ChevronUp } from 'lucide-react';
 
 function App() {
-  const { loading, error, position } = useGeolocation();
+  const { error, position } = useGeolocation();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
@@ -157,7 +157,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [activeKeyword, mapCenter.lat, mapCenter.lng, restaurants]);
+  }, [mapCenter.lat, mapCenter.lng, restaurants]);
   
   // Handle restaurant selection
   const handleRestaurantClick = (restaurant: Restaurant) => {
@@ -189,10 +189,6 @@ function App() {
     }
   };
 
-  // Toggle between trending keywords and restaurants
-  const toggleRestaurantsView = () => {
-    setShowRestaurants(!showRestaurants);
-  };
   
   // Handle back button click
   const handleBackClick = () => {
@@ -284,7 +280,7 @@ function App() {
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isDragging]);
+  }, []);
 
   // Toggle auto-switching of categories
   const toggleAutoSwitch = () => {
