@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Restaurant } from "../types";
 import { MapPin } from "lucide-react";
-import { nameCache } from "../services/openaiService";
 
 interface MiniMapProps {
     restaurants: Restaurant[];
@@ -12,7 +11,6 @@ interface MiniMapProps {
 
 const MiniMap: React.FC<MiniMapProps> = ({
     restaurants,
-    keyword,
     onMapClick,
 }) => {
     const mapRef = useRef<HTMLDivElement>(null);

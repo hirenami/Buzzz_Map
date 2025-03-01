@@ -27,6 +27,18 @@ export interface MapOptions {
     lng: number;
   };
   zoom: number;
+  mapTypeControl: boolean;
+  streetViewControl: boolean;
+  fullscreenControl: boolean;
+  zoomControl: boolean;
+  scrollwheel: boolean;
+  mapTypeId: string;
+  panControl: boolean;
+  rotateControl: boolean;
+  scaleControl: boolean;
+  disableDefaultUI: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  styles: any[];
 }
 
 export interface NewsArticle {

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Volume2, Wifi, Battery } from 'lucide-react';
+import { Wifi, Battery } from 'lucide-react';
 
 interface PhoneFrameProps {
   children: ReactNode;

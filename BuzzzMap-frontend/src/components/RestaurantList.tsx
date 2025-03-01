@@ -68,7 +68,7 @@ const RestaurantList: React.FC<RestaurantListProps> = ({
                   <div className="flex items-center">
                     <h3 className="font-bold text-sm text-gray-900">{restaurant.name}</h3>
                     {restaurant.isRealData && (
-                      <BadgeCheck className="w-4 h-4 text-blue-500 ml-1" title="Google Mapsからのデータ" />
+                      <BadgeCheck className="w-4 h-4 text-blue-500 ml-1"/>
                     )}
                   </div>
                   <div className="flex items-center mt-1">

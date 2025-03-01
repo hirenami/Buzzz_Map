@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Restaurant, MapOptions } from "../types";
-import { Info } from "lucide-react";
 import { summarizeRestaurantName, nameCache } from "../services/openaiService";
 
 interface MapProps {
@@ -21,12 +20,11 @@ const Map: React.FC<MapProps> = ({
 }) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
-    const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
+    const [,setMarkers] = useState<google.maps.Marker[]>([]);
     const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
         null
     );
     const markersRef = useRef<{ [key: string]: google.maps.Marker }>({});
-    const markerClusterer = useRef<any>(null);
     const [activeInfoWindow, setActiveInfoWindow] = useState<string | null>(
         null
     );
@@ -205,7 +203,7 @@ const Map: React.FC<MapProps> = ({
         if (!map) {
             initMap();
         }
-    }, [center]);
+    }, [center, map]);
 
     // Update map center when center prop changes
     useEffect(() => {
@@ -425,6 +423,7 @@ const Map: React.FC<MapProps> = ({
         activeKeyword,
         showCategoryLabels,
         summarizedNames,
+		
     ]);
 
     // Helper function to create custom marker with label

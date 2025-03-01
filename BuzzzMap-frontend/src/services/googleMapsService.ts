@@ -142,7 +142,7 @@ function mapGooglePlacesToRestaurants(
 			priceLevel: place.price_level || Math.floor(Math.random() * 3) + 1, // 1-3 price level
 			trendKeyword: keyword,
 			photoUrl,
-			description: generateDescription(keyword, place.name),
+			description: generateDescription(keyword),
 			isRealData: true
 		};
 	});
@@ -151,7 +151,7 @@ function mapGooglePlacesToRestaurants(
 /**
  * Generate a realistic description for a restaurant based on its keyword and name
  */
-function generateDescription(keyword: string, restaurantName: string): string {
+function generateDescription(keyword: string): string {
 	// Base descriptions for each keyword in Japanese
 	const keywordDescriptions: Record<string, string[]> = {
 		'抹茶ラテ': [

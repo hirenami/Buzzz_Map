@@ -6,7 +6,7 @@ interface HeaderProps {
   error: string | null;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLoading, error }) => {
+const Header: React.FC<HeaderProps> = () => {
   return (
     <header className="bg-white shadow-md py-2 px-3">
       <div className="flex items-center justify-between">
