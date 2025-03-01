@@ -298,21 +298,20 @@ function App() {
       clearInterval(autoSwitchIntervalRef.current);
       autoSwitchIntervalRef.current = null;
     }
-
+    
     // If auto-switch is enabled, set up the interval
     if (autoSwitchEnabled) {
-      // Start from the first category
       autoSwitchIntervalRef.current = setInterval(() => {
         // Get the next keyword index
         const nextIndex = (currentKeywordIndex + 1) % mockTrendingKeywords.length;
         setCurrentKeywordIndex(nextIndex);
-
+        
         // Get the next keyword and trigger the click
         const nextKeyword = mockTrendingKeywords[nextIndex].keyword;
         handleKeywordClick(nextKeyword);
-      }, 2000); // Switch every 1 seconds
+      }, 6000); // Switch every 6 seconds
     }
-
+    
     // Clean up the interval when the component unmounts or when autoSwitchEnabled changes
     return () => {
       if (autoSwitchIntervalRef.current) {

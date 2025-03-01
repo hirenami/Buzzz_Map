@@ -22,34 +22,7 @@ const MiniMap: React.FC<MiniMapProps> = ({ restaurants, keyword, onMapClick }) =
       setIsLoading(true);
       
       const loader = new Loader({
-        apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-        version: 'weekly',
-      });
-import React, { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
-import { Restaurant } from '../types';
-import { MapPin } from 'lucide-react';
-import { nameCache } from '../services/openaiService';
-
-interface MiniMapProps {
-  restaurants: Restaurant[];
-  keyword: string;
-  onMapClick: () => void;
-}
-
-const MiniMap: React.FC<MiniMapProps> = ({ restaurants, keyword, onMapClick }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const markersRef = useRef<{[key: string]: google.maps.Marker}>({});
-
-  // Initialize Google Maps
-  useEffect(() => {
-    const initMap = async () => {
-      setIsLoading(true);
-      
-      const loader = new Loader({
-        apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+        apiKey: process.env.API_KEY || '',
         version: 'weekly',
       });
 

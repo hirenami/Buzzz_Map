@@ -1,9 +1,8 @@
 import { Restaurant } from '../types';
 import { nameCache } from './openaiService';
 
-
-const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
+// API key for Google Places API
+const API_KEY = process.env.API_KEY;
 // Interface for Google Places API response
 interface PlacesResponse {
   results: {
@@ -148,30 +147,6 @@ function mapGooglePlacesToRestaurants(
     };
   });
 }
-
-/**
- * Fetch reviews from Google Places API based on placeId
- */
-export const fetchRestaurantReviews = async (
-  placeId: string
-): Promise<any> => {
-  try {
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&language=ja&fields=reviews&key=${API_KEY}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    if (data.status === 'OK' && data.result.reviews) {
-      return data.result.reviews;
-    } else {
-      return [];
-    }
-  } catch (error) {
-    console.error('口コミ取得エラー:', error);
-    return [];
-  }
-};
 
 /**
  * Generate a realistic description for a restaurant based on its keyword and name
