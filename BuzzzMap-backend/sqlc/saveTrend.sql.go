@@ -9,26 +9,34 @@ import (
 	"context"
 )
 
-const deleteTrend = `-- name: deleteTrend :exec
+const deleteTrend = `-- name: DeleteTrend :exec
 DELETE FROM trends
 `
 
-func (q *Queries) deleteTrend(ctx context.Context) error {
+func (q *Queries) DeleteTrend(ctx context.Context) error {
 	_, err := q.db.ExecContext(ctx, deleteTrend)
 	return err
 }
 
-const saveTrend = `-- name: saveTrend :exec
-INSERT INTO trends (trends_name,trends_location,trends_rank) VALUES (?, ?, ?)
+const saveTrend = `-- name: SaveTrend :exec
+INSERT INTO trends (trends_name,trends_location,trends_rank,trends_endtimestamp,trends_increase_percentage) VALUES (?, ?, ?, ?, ?)
 `
 
-type saveTrendParams struct {
-	TrendsName     string `json:"trends_name"`
-	TrendsLocation string `json:"trends_location"`
-	TrendsRank     int32  `json:"trends_rank"`
+type SaveTrendParams struct {
+	TrendsName               string `json:"trends_name"`
+	TrendsLocation           string `json:"trends_location"`
+	TrendsRank               int32  `json:"trends_rank"`
+	TrendsEndtimestamp       int32  `json:"trends_endtimestamp"`
+	TrendsIncreasePercentage int32  `json:"trends_increase_percentage"`
 }
 
-func (q *Queries) saveTrend(ctx context.Context, arg saveTrendParams) error {
-	_, err := q.db.ExecContext(ctx, saveTrend, arg.TrendsName, arg.TrendsLocation, arg.TrendsRank)
+func (q *Queries) SaveTrend(ctx context.Context, arg SaveTrendParams) error {
+	_, err := q.db.ExecContext(ctx, saveTrend,
+		arg.TrendsName,
+		arg.TrendsLocation,
+		arg.TrendsRank,
+		arg.TrendsEndtimestamp,
+		arg.TrendsIncreasePercentage,
+	)
 	return err
 }
