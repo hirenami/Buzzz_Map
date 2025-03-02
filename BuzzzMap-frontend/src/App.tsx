@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchRestaurantsByLocation } from "./services/googleMapsService";
-import { Restaurant,TrendingKeyword  } from "./types";
+import { Restaurant, TrendingKeyword } from "./types";
 import Map from "./components/Map";
 import TrendingKeywords from "./components/TrendingKeywords";
 import RestaurantList from "./components/RestaurantList";
@@ -9,6 +9,12 @@ import TrendingList from "./components/TrendingList";
 import TabBar from "./components/TabBar";
 import { Info, ChevronUp } from "lucide-react";
 import getTrend from "./api/getTrend";
+import {
+    SignedIn,
+    SignedOut,
+    SignInButton,
+    UserButton,
+} from "@clerk/clerk-react";
 
 function App() {
     const { error, position } = useGeolocation();
@@ -16,7 +22,7 @@ function App() {
     const [filteredRestaurants, setFilteredRestaurants] = useState<
         Restaurant[]
     >([]);
-	const [trending, setTrending] = useState<TrendingKeyword[]>([]);
+    const [trending, setTrending] = useState<TrendingKeyword[]>([]);
     const [selectedRestaurant, setSelectedRestaurant] =
         useState<Restaurant | null>(null);
     const [activeKeyword, setActiveKeyword] = useState<string | null>(null);
@@ -51,19 +57,22 @@ function App() {
 
                 try {
                     // Get all keywords
-					const data = await getTrend();
-					setTrending(data);
-					const locations = data.map((trend:TrendingKeyword) => trend.location);
-					console.log(locations);
+                    const data = await getTrend();
+                    setTrending(data);
+                    const locations = data.map(
+                        (trend: TrendingKeyword) => trend.location
+                    );
+                    console.log(locations);
 
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
-                    const allRestaurantsPromises = locations.map((location:string) =>
-                        fetchRestaurantsByLocation(
-                            location,
-                            position.lat,
-                            position.lng,
-                            5
-                        )
+                    const allRestaurantsPromises = locations.map(
+                        (location: string) =>
+                            fetchRestaurantsByLocation(
+                                location,
+                                position.lat,
+                                position.lng,
+                                5
+                            )
                     );
 
                     const results = await Promise.all(allRestaurantsPromises);
@@ -323,8 +332,7 @@ function App() {
         if (autoSwitchEnabled) {
             autoSwitchIntervalRef.current = setInterval(() => {
                 // Get the next keyword index
-                const nextIndex =
-                    (currentKeywordIndex + 1) % trending.length;
+                const nextIndex = (currentKeywordIndex + 1) % trending.length;
                 setCurrentKeywordIndex(nextIndex);
 
                 // Get the next keyword and trigger the click
@@ -456,6 +464,14 @@ function App() {
     // App content with tab-specific content
     const appContent = (
         <div className="flex flex-col h-screen relative">
+            <header>
+                <SignedOut>
+                    <SignInButton />
+                </SignedOut>
+                <SignedIn>
+                    <UserButton />
+                </SignedIn>
+            </header>
             {/* Show content based on active tab */}
             <div className="flex-1 overflow-hidden">
                 {activeTab === "explore"
@@ -470,11 +486,7 @@ function App() {
         </div>
     );
 
-    return (
-        <div>
-            {appContent}
-        </div>
-    );
+    return <div>{appContent}</div>;
 }
 
 export default App;
