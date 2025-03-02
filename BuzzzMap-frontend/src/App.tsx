@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
-import { mockTrendingKeywords } from "./data/mockTrends";
 import { fetchRestaurantsByLocation } from "./services/googleMapsService";
-import { Restaurant } from "./types";
+import { Restaurant,TrendingKeyword  } from "./types";
 import Map from "./components/Map";
 import TrendingKeywords from "./components/TrendingKeywords";
 import RestaurantList from "./components/RestaurantList";
 import TrendingList from "./components/TrendingList";
-import PhoneFrame from "./components/PhoneFrame";
 import TabBar from "./components/TabBar";
 import { Info, ChevronUp } from "lucide-react";
+import getTrend from "./api/getTrend";
 
 function App() {
     const { error, position } = useGeolocation();
@@ -17,6 +16,7 @@ function App() {
     const [filteredRestaurants, setFilteredRestaurants] = useState<
         Restaurant[]
     >([]);
+	const [trending, setTrending] = useState<TrendingKeyword[]>([]);
     const [selectedRestaurant, setSelectedRestaurant] =
         useState<Restaurant | null>(null);
     const [activeKeyword, setActiveKeyword] = useState<string | null>(null);
@@ -51,10 +51,13 @@ function App() {
 
                 try {
                     // Get all keywords
-					const locations = mockTrendingKeywords.map((k) => k.location);
+					const data = await getTrend();
+					setTrending(data);
+					const locations = data.map((trend:TrendingKeyword) => trend.location);
+					console.log(locations);
 
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
-                    const allRestaurantsPromises = locations.map((location) =>
+                    const allRestaurantsPromises = locations.map((location:string) =>
                         fetchRestaurantsByLocation(
                             location,
                             position.lat,
@@ -321,11 +324,11 @@ function App() {
             autoSwitchIntervalRef.current = setInterval(() => {
                 // Get the next keyword index
                 const nextIndex =
-                    (currentKeywordIndex + 1) % mockTrendingKeywords.length;
+                    (currentKeywordIndex + 1) % trending.length;
                 setCurrentKeywordIndex(nextIndex);
 
                 // Get the next keyword and trigger the click
-                const nextKeyword = mockTrendingKeywords[nextIndex].keyword;
+                const nextKeyword = trending[nextIndex].keyword;
                 handleKeywordClick(nextKeyword);
             }, 6000); // Switch every 6 seconds
         }
@@ -369,7 +372,7 @@ function App() {
             >
                 <div className="p-2 pt-3">
                     <TrendingKeywords
-                        keywords={mockTrendingKeywords}
+                        keywords={trending}
                         activeKeyword={activeKeyword}
                         onKeywordClick={handleKeywordClick}
                         isLoading={isLoading}
@@ -439,7 +442,7 @@ function App() {
                 ) : (
                     <div className="h-full">
                         <TrendingList
-                            keywords={mockTrendingKeywords}
+                            keywords={trending}
                             activeKeyword={activeKeyword}
                             onKeywordClick={handleKeywordClick}
                             onMapClick={handleMiniMapClick}

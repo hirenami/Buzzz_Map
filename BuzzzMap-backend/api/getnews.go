@@ -4,7 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type NewsAPIResponse struct {
@@ -24,7 +28,13 @@ type NewsAPIResponse struct {
 }
 
 func (a *Api) GetNews(query string) ([]string, error) {
-	apiKey := ""
+	env := godotenv.Load()
+	if env != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	apiKey := os.Getenv("SERP_API_KEY")
+
 	url := fmt.Sprintf("https://newsapi.org/v2/everything?q=%s&apiKey=%s", query, apiKey)
 
 	resp, err := http.Get(url)

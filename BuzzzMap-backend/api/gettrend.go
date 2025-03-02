@@ -1,14 +1,18 @@
 package api
 
 import (
-	g "github.com/serpapi/google-search-results-golang"
 	"fmt"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+	g "github.com/serpapi/google-search-results-golang"
 )
 
 type TrendingSearch struct {
-	Query            string `json:"query"`
-	EndTimestamp     int32    `json:"end_timestamp"`
-	IncreasePercentage int32   `json:"increase_percentage"`
+	Query              string `json:"query"`
+	EndTimestamp       int32  `json:"end_timestamp"`
+	IncreasePercentage int32  `json:"increase_percentage"`
 }
 
 func (a *Api) GetTrend() ([]TrendingSearch, error) {
@@ -18,7 +22,14 @@ func (a *Api) GetTrend() ([]TrendingSearch, error) {
 		"hours":  "168",
 	}
 
-	search := g.NewGoogleSearch(parameter, "a315f225081bc2a6a47570925e9fc45ce22f3fa1fe083c826bdc41219613a893")
+	env := godotenv.Load()
+	if env != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	apiKey := os.Getenv("SERP_API_KEY")
+
+	search := g.NewGoogleSearch(parameter, apiKey)
 	results, err := search.GetJSON()
 	if err != nil {
 		return nil, err
@@ -56,8 +67,8 @@ func (a *Api) GetTrend() ([]TrendingSearch, error) {
 						if endTimestamp, ok := trend["end_timestamp"].(float64); ok {
 							if increasePercentage, ok := trend["increase_percentage"].(float64); ok {
 								trendingData = append(trendingData, TrendingSearch{
-									Query:            query,
-									EndTimestamp:     int32(endTimestamp),
+									Query:              query,
+									EndTimestamp:       int32(endTimestamp),
 									IncreasePercentage: int32(increasePercentage),
 								})
 							}

@@ -2,8 +2,12 @@ package handler
 
 import (
 	"net/http"
+	"os"
+
+	"log"
 
 	"github.com/hirenami/TrendSpotter/usecase"
+	"github.com/joho/godotenv"
 )
 
 type Handler struct {
@@ -17,7 +21,13 @@ func Newhandler(usecase *usecase.Usecase) *Handler {
 }
 
 func setCORSHeaders(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	env := godotenv.Load()
+	if env != nil {
+		log.Fatal("Error loading .env file")
+	}
+	host := os.Getenv("LOCALHOST")
+
+	w.Header().Set("Access-Control-Allow-Origin", host)
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
