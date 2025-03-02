@@ -1,14 +1,12 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
+	g "github.com/serpapi/google-search-results-golang"
 )
 
 type NewsAPIResponse struct {
@@ -28,6 +26,13 @@ type NewsAPIResponse struct {
 }
 
 func (a *Api) GetNews(query string) ([]string, error) {
+	parameter := map[string]string{
+		"engine": "google_news",
+		"q":      query,
+		"gl":     "jp",
+		"hl":     "ja",
+	}
+
 	env := godotenv.Load()
 	if env != nil {
 		log.Fatal("Error loading .env file")
@@ -35,27 +40,35 @@ func (a *Api) GetNews(query string) ([]string, error) {
 
 	apiKey := os.Getenv("SERP_API_KEY")
 
-	url := fmt.Sprintf("https://newsapi.org/v2/everything?q=%s&apiKey=%s", query, apiKey)
-
-	resp, err := http.Get(url)
+	search := g.NewGoogleSearch(parameter, apiKey)
+	results, err := search.GetJSON()
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch news: %v", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response: %v", err)
+		return nil, err
 	}
 
-	var newsResponse NewsAPIResponse
-	if err := json.Unmarshal(body, &newsResponse); err != nil {
-		return nil, fmt.Errorf("failed to parse news response: %v", err)
+	news, ok := results["news_results"].([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("unexpected type for news_results")
 	}
 
-	var newsTitles []string
-	for _, article := range newsResponse.Articles {
-		newsTitles = append(newsTitles, article.Title)
+	log.Println(news)
+
+	var newsData []string
+
+	// 各ニュース情報を走査
+	for i := 0; i < len(news); i++ {
+		new, ok := news[i].(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		title, ok := new["title"].(string)
+		if !ok {
+			continue
+		}
+
+		newsData = append(newsData, title)
 	}
-	return newsTitles, nil
+
+	return newsData, nil
 }
