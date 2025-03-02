@@ -40,5 +40,10 @@ func (u *Usecase) SaveTrend(ctx context.Context) error {
 		}
 	}
 
-	return err
+	// トランザクションをコミット
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
 }

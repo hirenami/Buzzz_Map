@@ -46,7 +46,10 @@ func main() {
 
 	r := handler.SetupRoutes(Handler)
 
-	Usecase.SaveTrend(context.Background())
+	err  = Usecase.SaveTrend(context.Background())
+	if err != nil {
+		log.Fatalf("fail: Usecase.SaveTrend, %v\n", err)
+	}
 
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":8080", r); err != nil {

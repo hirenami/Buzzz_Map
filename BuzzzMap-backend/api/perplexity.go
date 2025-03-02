@@ -41,7 +41,7 @@ func (a *Api) CallPerplexityAPI(query []TrendingSearch) ([]Item, error) {
 		log.Fatal("Error loading .env file")
 	}
 
-	apiKey := os.Getenv("VITE_API_KEY")
+	apiKey := os.Getenv("API_KEY")
 
 	// HTTPクライアントを作成
 	client := &http.Client{}
