@@ -129,7 +129,6 @@ const TrendingKeywords: React.FC<TrendingKeywordsProps> = ({
             }`}
             onClick={() => onKeywordClick(item.keyword)}
             disabled={isLoading}
-            title={item.description}
           >
             {item.keyword}
           </button>

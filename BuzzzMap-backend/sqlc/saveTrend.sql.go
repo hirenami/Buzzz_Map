@@ -18,6 +18,40 @@ func (q *Queries) DeleteTrend(ctx context.Context) error {
 	return err
 }
 
+const getTrend = `-- name: GetTrend :many
+SELECT trends_id, trends_name, trends_location, trends_rank, trends_endtimestamp, trends_increase_percentage FROM trends
+`
+
+func (q *Queries) GetTrend(ctx context.Context) ([]Trend, error) {
+	rows, err := q.db.QueryContext(ctx, getTrend)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Trend{}
+	for rows.Next() {
+		var i Trend
+		if err := rows.Scan(
+			&i.TrendsID,
+			&i.TrendsName,
+			&i.TrendsLocation,
+			&i.TrendsRank,
+			&i.TrendsEndtimestamp,
+			&i.TrendsIncreasePercentage,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const saveTrend = `-- name: SaveTrend :exec
 INSERT INTO trends (trends_name,trends_location,trends_rank,trends_endtimestamp,trends_increase_percentage) VALUES (?, ?, ?, ?, ?)
 `

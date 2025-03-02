@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"log"
@@ -45,11 +44,6 @@ func main() {
 	Handler := handler.Newhandler(Usecase)
 
 	r := handler.SetupRoutes(Handler)
-
-	err  = Usecase.SaveTrend(context.Background())
-	if err != nil {
-		log.Fatalf("fail: Usecase.SaveTrend, %v\n", err)
-	}
 
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":8080", r); err != nil {

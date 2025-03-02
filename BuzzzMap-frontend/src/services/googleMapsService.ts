@@ -29,7 +29,7 @@ interface PlacesResponse {
 /**
  * Fetch restaurants from Google Places API based on keyword and location
  */
-export const fetchRestaurantsByKeyword = async (
+export const fetchRestaurantsByLocation = async (
 	keyword: string,
 	lat: number,
 	lng: number,

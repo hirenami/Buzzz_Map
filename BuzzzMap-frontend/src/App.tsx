@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { mockTrendingKeywords } from "./data/mockTrends";
-import { fetchRestaurantsByKeyword } from "./services/googleMapsService";
+import { fetchRestaurantsByLocation } from "./services/googleMapsService";
 import { Restaurant } from "./types";
 import Map from "./components/Map";
 import TrendingKeywords from "./components/TrendingKeywords";
@@ -51,12 +51,12 @@ function App() {
 
                 try {
                     // Get all keywords
-                    const keywords = mockTrendingKeywords.map((k) => k.keyword);
+					const locations = mockTrendingKeywords.map((k) => k.location);
 
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
-                    const allRestaurantsPromises = keywords.map((keyword) =>
-                        fetchRestaurantsByKeyword(
-                            keyword,
+                    const allRestaurantsPromises = locations.map((location) =>
+                        fetchRestaurantsByLocation(
+                            location,
                             position.lat,
                             position.lng,
                             5
@@ -145,7 +145,7 @@ function App() {
 
             try {
                 // Fetch real restaurants from Google Maps API
-                const realRestaurants = await fetchRestaurantsByKeyword(
+                const realRestaurants = await fetchRestaurantsByLocation(
                     keyword,
                     mapCenter.lat,
                     mapCenter.lng,
@@ -452,7 +452,7 @@ function App() {
 
     // App content with tab-specific content
     const appContent = (
-        <div className="flex flex-col h-full relative">
+        <div className="flex flex-col h-screen relative">
             {/* Show content based on active tab */}
             <div className="flex-1 overflow-hidden">
                 {activeTab === "explore"
@@ -468,8 +468,8 @@ function App() {
     );
 
     return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-            <PhoneFrame>{appContent}</PhoneFrame>
+        <div>
+            {appContent}
         </div>
     );
 }

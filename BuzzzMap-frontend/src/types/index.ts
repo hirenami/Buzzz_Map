@@ -1,7 +1,7 @@
 export interface TrendingKeyword {
   keyword: string;
+  location: string;
   rank: number;
-  description?: string;
   end_timestamp?: number;
   increase_percentage?: number;
 }

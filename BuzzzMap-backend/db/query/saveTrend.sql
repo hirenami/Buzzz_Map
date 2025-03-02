@@ -3,3 +3,6 @@ INSERT INTO trends (trends_name,trends_location,trends_rank,trends_endtimestamp,
 
 -- name: DeleteTrend :exec
 DELETE FROM trends;
+
+-- name: GetTrend :many
+SELECT * FROM trends;
