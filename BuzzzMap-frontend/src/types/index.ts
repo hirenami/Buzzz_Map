@@ -51,3 +51,10 @@ export interface NewsArticle {
   url: string;
   keyword: string;
 }
+
+export interface Bookmark {
+	id: string;
+	userId: string;
+	keyword: string;
+	createdAt: Date;
+  }
