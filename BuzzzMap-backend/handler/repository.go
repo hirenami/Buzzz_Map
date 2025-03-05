@@ -6,7 +6,7 @@ import (
 
 	"log"
 
-	"github.com/hirenami/TrendSpotter/usecase"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/usecase"
 	"github.com/joho/godotenv"
 )
 

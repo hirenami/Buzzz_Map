@@ -12,3 +12,8 @@ type Trend struct {
 	TrendsEndtimestamp       int32  `json:"trends_endtimestamp"`
 	TrendsIncreasePercentage int32  `json:"trends_increase_percentage"`
 }
+
+type User struct {
+	UserID      []byte `json:"user_id"`
+	ClerkUserID string `json:"clerk_user_id"`
+}

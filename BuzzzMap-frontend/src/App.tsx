@@ -21,7 +21,9 @@ function App() {
     const [selectedRestaurant, setSelectedRestaurant] =
         useState<Restaurant | null>(null);
     const [activeKeyword, setActiveKeyword] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'explore' | 'trending' | 'user'>('explore');
+    const [activeTab, setActiveTab] = useState<"explore" | "trending" | "user">(
+        "explore"
+    );
     const [mapHeight, setMapHeight] = useState<number>(70); // Default map height percentage (0-100)
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [startY, setStartY] = useState<number>(0);
@@ -60,12 +62,7 @@ function App() {
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
                     const allRestaurantsPromises = locations.map(
                         (location: string) =>
-                            mapService(
-                                location,
-                                position.lat,
-                                position.lng,
-                                5
-                            )
+                            mapService(location, position.lat, position.lng, 5)
                     );
 
                     const results = await Promise.all(allRestaurantsPromises);
@@ -81,6 +78,7 @@ function App() {
 
                     // Get one restaurant from each category
                     allRestaurants.forEach((restaurant) => {
+                        if (restaurant == null || restaurant.trendKeyword == null) return;
                         if (!includedKeywords.has(restaurant.trendKeyword)) {
                             representativeRestaurants.push(restaurant);
                             includedKeywords.add(restaurant.trendKeyword);
@@ -108,6 +106,7 @@ function App() {
 
             // Get one restaurant from each category
             restaurants.forEach((restaurant) => {
+                if (restaurant == null || restaurant.trendKeyword == null) return;
                 if (!includedKeywords.has(restaurant.trendKeyword)) {
                     representativeRestaurants.push(restaurant);
                     includedKeywords.add(restaurant.trendKeyword);
@@ -455,24 +454,33 @@ function App() {
     );
 
     const userTabContent = (
-		<div className="flex flex-col h-full relative bg-white">
-		  {/* Full screen content area */}
-		  <div className={`flex-1 overflow-hidden transition-opacity duration-100 ${tabChangeAnimation ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'}`}>
-			<UserTab 
-			  keywords={trending}
-			  onKeywordClick={handleKeywordClick}
-			/>
-		  </div>
-		</div>
-	  );
+        <div className="flex flex-col h-full relative bg-white">
+            {/* Full screen content area */}
+            <div
+                className={`flex-1 overflow-hidden transition-opacity duration-100 ${
+                    tabChangeAnimation
+                        ? "opacity-0 transform translate-y-4"
+                        : "opacity-100 transform translate-y-0"
+                }`}
+            >
+                <UserTab
+                    keywords={trending}
+                    onKeywordClick={handleKeywordClick}
+                />
+            </div>
+        </div>
+    );
 
     // App content with tab-specific content
     const appContent = (
         <div className="flex flex-col h-screen relative">
             {/* Show content based on active tab */}
             <div className="flex-1 overflow-hidden">
-			{activeTab === 'explore' ? exploreTabContent : 
-             activeTab === 'trending' ? trendingTabContent : userTabContent}
+                {activeTab === "explore"
+                    ? exploreTabContent
+                    : activeTab === "trending"
+                    ? trendingTabContent
+                    : userTabContent}
             </div>
 
             {/* Tab bar fixed at bottom */}

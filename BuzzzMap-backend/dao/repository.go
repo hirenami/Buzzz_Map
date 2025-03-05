@@ -3,7 +3,7 @@ package dao
 import (
 	"database/sql"
 
-	"github.com/hirenami/TrendSpotter/sqlc"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/sqlc"
 )
 
 type Dao struct {

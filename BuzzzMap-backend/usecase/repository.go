@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/hirenami/TrendSpotter/api"
-	"github.com/hirenami/TrendSpotter/dao"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/api"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/dao"
 )
 
 // Usecase構造体

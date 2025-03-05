@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/api"
 
-	"github.com/hirenami/TrendSpotter/api"
 )
 
 func (u *Usecase) GetNewsUsecase(ctx context.Context,query string) ([]api.NewsArticle, error) {

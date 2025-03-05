@@ -1,16 +1,25 @@
-export const mapService = async (keyword : string, lat : number, lng :number,limit :number) => {
-	const localhost = import.meta.env.VITE_LOCALHOST;
-	try {
-		const response = await fetch(`${localhost}/getrestaurants?keyword=${keyword}&lat=${lat}&lng=${lng}&limit=${limit}`);
+import { Restaurant } from '../types';
 
-		if (!response.ok) {
-			throw new Error('Failed to fetch restaurants');
-		}
+export const mapService = async (
+    keyword: string,
+    lat: number,
+    lng: number,
+    limit: number
+): Promise<Restaurant[]> => {
+    const localhost = import.meta.env.VITE_LOCALHOST;
+    try {
+        const response = await fetch(
+            `${localhost}/getrestaurants?keyword=${keyword}&lat=${lat}&lng=${lng}&limit=${limit}`
+        );
 
-		const restaurants = await response.json();
+        if (!response.ok) {
+            throw new Error('Failed to fetch restaurants');
+        }
 
-		return restaurants;
-	} catch (error) {
-		console.error(error);
-	}
-}
+        const restaurants: Restaurant[] = await response.json();
+        return restaurants;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};

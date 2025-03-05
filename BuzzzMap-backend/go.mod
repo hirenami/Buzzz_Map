@@ -1,4 +1,4 @@
-module github.com/hirenami/TrendSpotter
+module github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend
 
 go 1.22.2
 

@@ -8,10 +8,10 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/hirenami/TrendSpotter/dao"
-	"github.com/hirenami/TrendSpotter/handler"
-	"github.com/hirenami/TrendSpotter/sqlc"
-	"github.com/hirenami/TrendSpotter/usecase"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/dao"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/handler"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/sqlc"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/usecase"
 	"github.com/joho/godotenv"
 )
 

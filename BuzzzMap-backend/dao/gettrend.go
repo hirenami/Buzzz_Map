@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/hirenami/TrendSpotter/sqlc"
+	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/sqlc"
 )
 
 func (d *Dao) GetTrend(ctx context.Context, tx *sql.Tx) ([]sqlc.Trend, error) {
