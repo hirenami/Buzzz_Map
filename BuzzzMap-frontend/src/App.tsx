@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
-import { fetchRestaurantsByLocation } from "./services/googleMapsService";
+import { mapService } from "./services/mapService";
 import { Restaurant, TrendingKeyword } from "./types";
 import Map from "./components/Map";
 import TrendingKeywords from "./components/TrendingKeywords";
@@ -60,7 +60,7 @@ function App() {
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
                     const allRestaurantsPromises = locations.map(
                         (location: string) =>
-                            fetchRestaurantsByLocation(
+                            mapService(
                                 location,
                                 position.lat,
                                 position.lng,
@@ -150,7 +150,7 @@ function App() {
 
             try {
                 // Fetch real restaurants from Google Maps API
-                const realRestaurants = await fetchRestaurantsByLocation(
+                const realRestaurants = await mapService(
                     keyword,
                     mapCenter.lat,
                     mapCenter.lng,

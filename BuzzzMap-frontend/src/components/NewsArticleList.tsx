@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { NewsArticle } from '../types';
 import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
+import { getNews } from '../services/getNews';
 
 interface NewsArticleListProps {
-  articles: NewsArticle[];
   keyword: string;
   onBackClick: () => void;
 }
 
 const NewsArticleList: React.FC<NewsArticleListProps> = ({ 
-  articles, 
   keyword,
   onBackClick 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [articles, setArticles] = useState<NewsArticle[]>([]);
   
-  // Add animation when component mounts
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    // 非同期関数を内部で定義
+    const fetchData = async () => {
+        setIsVisible(true);
+        const data = await getNews(keyword);  // getNewsは非同期関数と仮定
+        setArticles(data);  // 非同期で取得したデータをセット
+    };
+
+    fetchData();  // 非同期関数を実行
+}, [keyword]);  // keywordが変わるたびに実行
   
   return (
     <div className={`h-full overflow-y-auto p-2 pb-16 transition-opacity duration-100 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>

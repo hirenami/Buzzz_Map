@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { TrendingKeyword } from "../types";
 import { TrendingUp, Newspaper, Store } from "lucide-react";
-import { mockArticles } from "../data/mockArticles";
 import NewsArticleList from "./NewsArticleList";
 import RestaurantList from "./RestaurantList";
-import { fetchRestaurantsByLocation } from "../services/googleMapsService";
+import { mapService } from "../services/mapService";
 import MiniMap from "./MiniMap";
 
 interface TrendingListProps {
@@ -20,6 +19,7 @@ const TrendingList: React.FC<TrendingListProps> = ({
     onKeywordClick,
     onMapClick,
 }) => {
+
     const [isVisible, setIsVisible] = useState(false);
     const [prevKeyword, setPrevKeyword] = useState<string | null>(
         activeKeyword
@@ -92,7 +92,7 @@ const TrendingList: React.FC<TrendingListProps> = ({
             const defaultLocation = { lat: 35.658, lng: 139.7016 };
 
             // Fetch restaurants for this keyword
-            const fetchedRestaurants = await fetchRestaurantsByLocation(
+            const fetchedRestaurants = await mapService(
                 keyword,
                 defaultLocation.lat,
                 defaultLocation.lng,
@@ -154,11 +154,9 @@ const TrendingList: React.FC<TrendingListProps> = ({
 
     // Render based on view mode
     if (viewMode === "articles" && selectedKeyword) {
-        const articles = mockArticles[selectedKeyword] || [];
         return (
             <div className="h-full overflow-hidden">
                 <NewsArticleList
-                    articles={articles}
                     keyword={selectedKeyword}
                     onBackClick={handleBackClick}
                 />

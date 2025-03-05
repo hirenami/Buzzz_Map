@@ -1,4 +1,4 @@
-export const useMapService = async (keyword : string, lat : number, lng :number,limit :number) => {
+export const mapService = async (keyword : string, lat : number, lng :number,limit :number) => {
 	const localhost = import.meta.env.VITE_LOCALHOST;
 	const response = await fetch(`${localhost}/getrestaurants?keyword=${keyword}&lat=${lat}&lng=${lng}&limit=${limit}`);
 

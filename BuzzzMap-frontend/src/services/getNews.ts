@@ -1,4 +1,4 @@
-export const useGetNews = async (query:string) => {
+export const getNews = async (query:string) => {
 	const localhost = import.meta.env.VITE_LOCALHOST;
 	const response = await fetch(`${localhost}/getnews?query=${query}`);
 
