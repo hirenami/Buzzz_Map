@@ -1,5 +1,4 @@
 import { Restaurant } from '../types';
-import { nameCache } from './openaiService';
 
 // API key for Google Places API
 const VITE_API_KEY = import.meta.env.VITE_API_KEY;
@@ -25,6 +24,8 @@ interface PlacesResponse {
 	}[];
 	status: string;
 }
+
+export const nameCache: Record<string, string> = {};
 
 /**
  * Fetch restaurants from Google Places API based on keyword and location

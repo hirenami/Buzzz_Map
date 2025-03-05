@@ -31,6 +31,7 @@ const TrendingList: React.FC<TrendingListProps> = ({
         "keywords" | "articles" | "restaurants"
     >("keywords");
     const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [restaurants, setRestaurants] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 

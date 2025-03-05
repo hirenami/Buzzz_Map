@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Restaurant, MapOptions } from "../types";
-import { summarizeRestaurantName, nameCache } from "../services/openaiService";
 
 interface MapProps {
     restaurants: Restaurant[];
@@ -28,10 +27,6 @@ const Map: React.FC<MapProps> = ({
     const [activeInfoWindow, setActiveInfoWindow] = useState<string | null>(
         null
     );
-    const [summarizedNames, setSummarizedNames] = useState<
-        Record<string, string>
-    >({});
-
     // Initialize Google Maps
     useEffect(() => {
         const initMap = async () => {
@@ -212,53 +207,6 @@ const Map: React.FC<MapProps> = ({
         }
     }, [center, map]);
 
-    // Summarize restaurant names for display on markers
-    useEffect(() => {
-        const summarizeNames = async () => {
-            const newSummarizedNames: Record<string, string> = {
-                ...summarizedNames,
-            };
-            const namesToSummarize = restaurants.filter(
-                (r) =>
-                    r.name.length > 8 &&
-                    !summarizedNames[r.id] &&
-                    !nameCache[r.id]
-            );
-
-            if (namesToSummarize.length === 0) return;
-
-            for (const restaurant of namesToSummarize) {
-                // Check if we already have this name in the cache
-                if (nameCache[restaurant.id]) {
-                    newSummarizedNames[restaurant.id] =
-                        nameCache[restaurant.id];
-                    continue;
-                }
-
-                try {
-                    const shortName = await summarizeRestaurantName(
-                        restaurant.name
-                    );
-                    newSummarizedNames[restaurant.id] = shortName;
-                    nameCache[restaurant.id] = shortName; // Add to global cache
-                } catch (error) {
-                    console.error("店舗名の要約エラー:", error);
-                    // Fallback to simple truncation
-                    newSummarizedNames[restaurant.id] =
-                        restaurant.name.substring(0, 7) + "…";
-                    nameCache[restaurant.id] =
-                        newSummarizedNames[restaurant.id]; // Add to global cache
-                }
-            }
-
-            setSummarizedNames(newSummarizedNames);
-        };
-
-        if (activeKeyword && !showCategoryLabels) {
-            summarizeNames();
-        }
-    }, [restaurants, activeKeyword, showCategoryLabels, summarizedNames]);
-
     // Add markers for restaurants
     useEffect(() => {
         if (!map || !restaurants.length) return;
@@ -422,8 +370,6 @@ const Map: React.FC<MapProps> = ({
         onMarkerClick,
         activeKeyword,
         showCategoryLabels,
-        summarizedNames,
-		
     ]);
 
     // Helper function to create custom marker with label
@@ -491,11 +437,7 @@ const Map: React.FC<MapProps> = ({
 
             // Get the summarized restaurant name
             let displayName = restaurant.name;
-            if (summarizedNames[restaurant.id]) {
-                displayName = summarizedNames[restaurant.id];
-            } else if (nameCache[restaurant.id]) {
-                displayName = nameCache[restaurant.id];
-            } else if (restaurant.name.length > 8) {
+            if(restaurant.name.length > 8) {
                 displayName = restaurant.name.substring(0, 7) + "…";
             }
 

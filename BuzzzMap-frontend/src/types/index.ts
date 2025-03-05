@@ -16,7 +16,6 @@ export interface Restaurant {
   priceLevel: number;
   trendKeyword: string;
   photoUrl?: string;
-  description?: string;
   isRealData?: boolean;
   isMockData?: boolean;
 }
@@ -44,7 +43,6 @@ export interface MapOptions {
 export interface NewsArticle {
   id: string;
   title: string;
-  summary: string;
   source: string;
   date: string;
   imageUrl: string;

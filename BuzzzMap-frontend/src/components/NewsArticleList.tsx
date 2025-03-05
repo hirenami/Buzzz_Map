@@ -57,7 +57,6 @@ const NewsArticleList: React.FC<NewsArticleListProps> = ({
               </div>
               <div className="p-3">
                 <h3 className="font-bold text-sm text-gray-900 mb-2">{article.title}</h3>
-                <p className="text-xs text-gray-600 mb-3">{article.summary}</p>
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center text-gray-500">
                     <Calendar className="w-3 h-3 mr-1" />
