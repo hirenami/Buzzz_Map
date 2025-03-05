@@ -66,9 +66,12 @@ function App() {
                     );
 
                     const results = await Promise.all(allRestaurantsPromises);
+					console.log("Results from mapService:", results);
 
                     // Flatten the array of arrays
-                    const allRestaurants = results.flat();
+                    const allRestaurants = results.flat().filter(item => item !== null);
+					console.log("Flattened Restaurants:", allRestaurants);
+
 
                     setRestaurants(allRestaurants);
 
@@ -78,12 +81,14 @@ function App() {
 
                     // Get one restaurant from each category
                     allRestaurants.forEach((restaurant) => {
-                        if (restaurant == null || restaurant.trendKeyword == null) return;
                         if (!includedKeywords.has(restaurant.trendKeyword)) {
                             representativeRestaurants.push(restaurant);
-                            includedKeywords.add(restaurant.trendKeyword);
+                            includedKeywords.add(restaurant.trendkeyword);
                         }
+						console.log("Restaurant:", restaurant);
                     });
+
+					console.log("Representative Restaurants:", representativeRestaurants);
 
                     setFilteredRestaurants(representativeRestaurants);
                 } catch (error) {
