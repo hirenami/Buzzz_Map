@@ -8,7 +8,6 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/hirenami/TrendSpotter/api"
 	"github.com/hirenami/TrendSpotter/dao"
 	"github.com/hirenami/TrendSpotter/handler"
 	"github.com/hirenami/TrendSpotter/sqlc"

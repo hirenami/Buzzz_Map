@@ -12,21 +12,33 @@ import (
 // Google Places APIから取得した結果をレストラン型に変換
 func (u *Usecase) MapGooglePlacesToRestaurants(ctx context.Context, keyword, lat, lng string, limit int) ([]Restaurant, error) {
 	var restaurants []Restaurant
+
+	// FetchRestaurantsByLocation関数からレストラン情報を取得
 	places, err := u.api.FetchRestaurantsByLocation(keyword, lat, lng)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to fetch restaurants: %w", err)
 	}
 
-	env := godotenv.Load()
-	if env != nil {
-		log.Fatal("Error loading .env file")
+	// .envファイルを読み込む
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: Error loading .env file: %v", err)
 	}
 
+	// APIキーを取得
 	apiKey := os.Getenv("GOOGLE_API_KEY")
+	if apiKey == "" {
+		return nil, fmt.Errorf("GOOGLE_API_KEY is not set in environment variables")
+	}
 
+	// limitの値がplaces.Resultsの長さを超えないようにする
+	if limit > len(places.Results) {
+		limit = len(places.Results)
+	}
+
+	// レストラン情報を変換して配列に追加
 	for _, place := range places.Results[:limit] {
-		// 写真のURLを取得
-		photoURL := ""
+		// 写真URLを生成
+		var photoURL string
 		if len(place.Photos) > 0 {
 			photoURL = fmt.Sprintf("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=%s&key=%s", place.Photos[0].PhotoReference, apiKey)
 		} else {
@@ -36,7 +48,7 @@ func (u *Usecase) MapGooglePlacesToRestaurants(ctx context.Context, keyword, lat
 		// ユニークなIDを生成
 		id := "real-" + place.PlaceID
 
-		// Restaurant構造体に変換
+		// Restaurant構造体に変換してrestaurantsに追加
 		restaurants = append(restaurants, Restaurant{
 			ID:           id,
 			Name:         place.Name,
