@@ -46,15 +46,6 @@ func main() {
 
 	r := handler.SetupRoutes(Handler)
 
-	a := api.NewApi()
-	data , err  := a.GetNews("マクドナルド")
-	if err != nil {
-		log.Fatalf("fail: a.GetNews, %v\n", err)
-	}
-	log.Println(data)
-
-	
-
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
