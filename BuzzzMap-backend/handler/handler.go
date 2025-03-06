@@ -9,6 +9,9 @@ func SetupRoutes(handler *Handler) *mux.Router {
 	r.HandleFunc("/getrestaurants", handler.MapGooglePlacesToRestaurantsController).Methods("GET", "OPTIONS")
 	r.HandleFunc("/getnews", handler.GetNewsController).Methods("GET", "OPTIONS")
 	r.HandleFunc(("/webhook"), handler.WebhookHandler).Methods("POST", "OPTIONS")
+	r.HandleFunc("/getbookmark", handler.GetBookmark).Methods("GET", "OPTIONS")
+	r.HandleFunc("/createbookmark", handler.CreateBookmark).Methods("POST", "OPTIONS")
+	r.HandleFunc("/deletebookmark", handler.DeleteBookmark).Methods("POST", "OPTIONS")
 
 	return r
 }

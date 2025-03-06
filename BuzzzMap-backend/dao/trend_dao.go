@@ -19,3 +19,18 @@ func (d *Dao) SaveTrend(ctx context.Context, tx *sql.Tx, trendName, trendLocatio
 
 	return d.WithTx(tx).SaveTrend(ctx, args)
 }
+
+func (d *Dao) GetTrend(ctx context.Context, tx *sql.Tx) ([]sqlc.Trend, error) {
+	txQueries := d.WithTx(tx)
+
+	return txQueries.GetTrend(ctx)
+
+}
+
+func (d *Dao) DeleteTrend(ctx context.Context, tx *sql.Tx) error {
+	txQueries := d.WithTx(tx)
+
+	return txQueries.DeleteTrend(ctx)
+
+}
+

@@ -4,6 +4,20 @@
 
 package sqlc
 
+type Bookmark struct {
+	BookmarksID           []byte  `json:"bookmarks_id"`
+	UserID                string  `json:"user_id"`
+	BookmarksName         string  `json:"bookmarks_name"`
+	BookmarksAddress      string  `json:"bookmarks_address"`
+	BookmarksLatitude     float64 `json:"bookmarks_latitude"`
+	BookmarksLongitude    float64 `json:"bookmarks_longitude"`
+	BookmarksRating       float64 `json:"bookmarks_rating"`
+	BookmarksPriceLevel   int32   `json:"bookmarks_price_level"`
+	BookmarksTrendkeyword string  `json:"bookmarks_trendkeyword"`
+	BookmarksPhotourl     string  `json:"bookmarks_photourl"`
+	BookmarksIsrealdata   bool    `json:"bookmarks_isrealdata"`
+}
+
 type Trend struct {
 	TrendsID                 []byte `json:"trends_id"`
 	TrendsName               string `json:"trends_name"`

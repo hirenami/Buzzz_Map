@@ -20,3 +20,16 @@ type Restaurant struct {
 	PhotoURL     string  `json:"photo_url"`
 	IsRealData   bool    `json:"is_real_data"`
 }
+
+type Bookmark struct {
+	UserID       string  `json:"userid"`
+	Name         string  `json:"name"`
+	Address      string  `json:"address"`
+	Lat          float64 `json:"lat"`
+	Lng          float64 `json:"lng"`
+	Rating       float64 `json:"rating"`
+	PriceLevel   int     `json:"price_level"`
+	Trendkeyword string  `json:"trendkeyword"`
+	PhotoURL     string  `json:"photo_url"`
+	IsRealData   bool    `json:"is_real_data"`
+}
