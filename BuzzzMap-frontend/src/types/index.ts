@@ -54,3 +54,23 @@ export interface Bookmark {
 	keyword: string;
 	createdAt: Date;
 }
+
+export interface CategoryTab {
+	id: string;
+	name: string;
+  }
+
+export interface Event {
+	id: string;
+	name: string;
+	description: string;
+	category: 'food-entertainment' | 'culture-art';
+	startDate: string;
+	endDate: string;
+	location: string;
+	address: string;
+	lat: number;
+	lng: number;
+	photoUrl: string;
+	venueName: string;
+}
