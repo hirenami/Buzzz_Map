@@ -60,7 +60,7 @@ function App() {
                     const locations = data.map(
                         (trend: TrendingKeyword) => trend.location
                     );
-                    console.log(locations);
+                    console.log("locations:", locations);
 
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
                     const allRestaurantsPromises = locations.map(

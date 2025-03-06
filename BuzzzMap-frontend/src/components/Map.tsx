@@ -328,8 +328,9 @@ const Map: React.FC<MapProps> = ({
 
                         // Add click event to the "詳細を見る" button
                         setTimeout(() => {
-                            const detailButton =
-								content.querySelector('button[data-action="details"]');
+                            const detailButton = content.querySelector(
+                                'button[data-action="details"]'
+                            );
                             if (detailButton) {
                                 detailButton.addEventListener("click", (e) => {
                                     e.preventDefault();
@@ -377,9 +378,9 @@ const Map: React.FC<MapProps> = ({
         };
     }, [
         map,
-        restaurants,
         infoWindow,
         onMarkerClick,
+        restaurants,
         activeKeyword,
         showCategoryLabels,
     ]);
@@ -392,22 +393,24 @@ const Map: React.FC<MapProps> = ({
         index: number,
         showCategoryLabels: boolean
     ) => {
-        // Get category color based on trend keyword
-        const getCategoryColor = (keyword: string): string => {
-            const colorMap: Record<string, string> = {
-                抹茶ラテ: "#4CAF50", // Green
-                ビリアタコス: "#FF9800", // Orange
-                スマッシュバーガー: "#F44336", // Red
-                タピオカミルクティー: "#9C27B0", // Purple
-                ナッシュビルホットチキン: "#FF5722", // Deep Orange
-                サワードウブレッド: "#795548", // Brown
-                オーツミルク: "#8BC34A", // Light Green
-                韓国焼肉: "#E91E63", // Pink
-                ナチュラルワイン: "#673AB7", // Deep Purple
-                プラントベースバーガー: "#009688", // Teal
-            };
+        const colorList = [
+            "#4CAF50", // Green
+            "#FF9800", // Orange
+            "#F44336", // Red
+            "#9C27B0", // Purple
+            "#FF5722", // Deep Orange
+            "#795548", // Brown
+            "#8BC34A", // Light Green
+            "#E91E63", // Pink
+            "#673AB7", // Deep Purple
+            "#009688", // Teal
+            // 他にも色を追加可能
+        ];
 
-            return colorMap[keyword] || "#2196F3"; // Default blue
+        // キーワードごとに色を割り当てる
+        const getCategoryColor = (index: number): string => {
+            // 色リストのインデックスに基づいて色を取得（順番に割り当て）
+            return colorList[index % colorList.length]; // 配列の長さを超えたら再利用
         };
 
         // Calculate vertical offset to prevent overlapping labels
@@ -418,7 +421,7 @@ const Map: React.FC<MapProps> = ({
 
         if (activeKeyword && activeKeyword !== "all") {
             // Get color based on trend keyword
-            const markerColor = getCategoryColor(restaurant.trendkeyword);
+            const markerColor = getCategoryColor(index);
 
             // Create pin SVG with rating number with one decimal place
             const pinSVG = `
@@ -472,7 +475,7 @@ const Map: React.FC<MapProps> = ({
             }
         } else {
             // For "all" categories, use category-colored markers
-            const markerColor = getCategoryColor(restaurant.trendkeyword);
+            const markerColor = getCategoryColor(index);
 
             // Create category pin SVG with rating number with one decimal place
             const categoryPinSVG = `
@@ -501,8 +504,17 @@ const Map: React.FC<MapProps> = ({
                 labelOrigin: new google.maps.Point(15, labelOriginY),
             });
 
-            // Add label with keyword name when showing "all" categories
-            if (showCategoryLabels) {
+            if (activeKeyword && !showCategoryLabels) {
+                marker.setLabel({
+                    text: restaurant.trendkeyword,
+                    color: "#333333",
+                    fontSize: "10px",
+                    fontWeight: "bold",
+                    className: `marker-label marker-label-${
+                        index % 2
+                    } marker-label-transparent`,
+                });
+            } else if (showCategoryLabels) {
                 marker.setLabel({
                     text: restaurant.trendkeyword,
                     color: "#333333",

@@ -57,7 +57,7 @@ func (u *Usecase) MapGooglePlacesToRestaurants(ctx context.Context, keyword, lat
 			Lng:          place.Geometry.Location.Lng,
 			Rating:       place.Rating,
 			PriceLevel:   place.PriceLevel,
-			trendkeyword: keyword,
+			Trendkeyword: keyword,
 			PhotoURL:     photoURL,
 			IsRealData:   true,
 		})

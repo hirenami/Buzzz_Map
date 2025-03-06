@@ -44,7 +44,7 @@ func (a *Api) FetchRestaurantsByLocation(keyword, lat, lng string) (PlacesRespon
 
 	apiKey := os.Getenv("GOOGLE_API_KEY")
 
-	apiURL := fmt.Sprintf("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=1500&type=restaurant&keyword=%s&language=ja&key=%s", lat, lng, url.QueryEscape(keyword), apiKey)
+	apiURL := fmt.Sprintf("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=500&type=restaurant&keyword=%s&language=ja&key=%s", lat, lng, url.QueryEscape(keyword), apiKey)
 
 	// APIリクエストを送信
 	resp, err := http.Get(apiURL)

@@ -16,7 +16,7 @@ type Restaurant struct {
 	Lng          float64 `json:"lng"`
 	Rating       float64 `json:"rating"`
 	PriceLevel   int     `json:"price_level"`
-	trendkeyword string  `json:"trendkeyword"`
+	Trendkeyword string  `json:"trendkeyword"`
 	PhotoURL     string  `json:"photo_url"`
 	IsRealData   bool    `json:"is_real_data"`
 }
