@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/sqlc"
+	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/sqlc"
 )
 
-func (d *Dao) CreateBookmark(ctx context.Context, tx *sql.Tx,userID, name, address string, latitude, longitude, rating float64, pricelevel int32, trendkeyword, photourl string, isrealdata bool) error {
+func (d *Dao) CreateBookmark(ctx context.Context, tx *sql.Tx, userID, name, address string, latitude, longitude, rating float64, pricelevel int32, trendkeyword, photourl string, isrealdata bool) error {
 
 	txQueries := d.WithTx(tx)
 
@@ -33,7 +33,7 @@ func (d *Dao) DeleteBookmark(ctx context.Context, tx *sql.Tx, userID, address st
 	txQueries := d.WithTx(tx)
 
 	args := sqlc.DeleteBookmarkParams{
-		UserID:            userID,
+		UserID:             userID,
 		BookmarksAddress:   address,
 		BookmarksLatitude:  latitude,
 		BookmarksLongitude: longitude,
@@ -49,4 +49,3 @@ func (d *Dao) GetBookmark(ctx context.Context, tx *sql.Tx, userID string) ([]sql
 	return txQueries.GetBookmark(ctx, userID)
 
 }
-

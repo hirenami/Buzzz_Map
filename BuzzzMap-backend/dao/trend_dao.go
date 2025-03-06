@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/sqlc"
+	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/sqlc"
 )
 
 func (d *Dao) SaveTrend(ctx context.Context, tx *sql.Tx, trendName, trendLocation string, trendRank, trendEndtimestamp, trendIncreasepercentage int32) error {
@@ -33,4 +33,3 @@ func (d *Dao) DeleteTrend(ctx context.Context, tx *sql.Tx) error {
 	return txQueries.DeleteTrend(ctx)
 
 }
-

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/api"
-	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/dao"
+	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/api"
+	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/dao"
 )
 
 // Usecase構造体

@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend/usecase"
+	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/usecase"
 )
 
 func (h *Handler) GetBookmark(w http.ResponseWriter, r *http.Request) {

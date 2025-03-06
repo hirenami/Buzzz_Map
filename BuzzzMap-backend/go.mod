@@ -1,4 +1,4 @@
-module github.com/kikuchi0790/Buzzz_Map/BuzzzMap-backend
+module github.com/hirenami/Buzzz_Map/BuzzzMap-backend
 
 go 1.22.2
 
