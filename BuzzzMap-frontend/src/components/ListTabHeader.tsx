@@ -10,7 +10,6 @@ interface ListTabHeaderProps {
 const ListTabHeader: React.FC<ListTabHeaderProps> = ({ 
   activeMode, 
   onModeChange,
-  activeKeyword
 }) => {
   return (
     <div className="bg-white p-3 animate-slide-down">

@@ -209,6 +209,150 @@ const Map: React.FC<MapProps> = ({
 
     // Add markers for restaurants
     useEffect(() => {
+		// Helper function to create custom marker with label
+		const updateMarkerIcon = (
+			marker: google.maps.Marker,
+			restaurant: Restaurant,
+			activeKeyword: string | null,
+			index: number,
+			showCategoryLabels: boolean
+		) => {
+			const colorList = [
+				"#4CAF50", // Green
+				"#FF9800", // Orange
+				"#F44336", // Red
+				"#9C27B0", // Purple
+				"#FF5722", // Deep Orange
+				"#795548", // Brown
+				"#8BC34A", // Light Green
+				"#E91E63", // Pink
+				"#673AB7", // Deep Purple
+				"#009688", // Teal
+				// 他にも色を追加可能
+			];
+	
+			// キーワードごとに色を割り当てる
+			const getCategoryColor = (index: number): string => {
+				// 色リストのインデックスに基づいて色を取得（順番に割り当て）
+				return colorList[index % colorList.length]; // 配列の長さを超えたら再利用
+			};
+	
+			// Calculate vertical offset to prevent overlapping labels
+			const labelOriginY = index % 2 === 0 ? 35 : 45;
+	
+			// Format rating to show one decimal place
+			const formattedRating = restaurant.rating.toFixed(1);
+	
+			if (activeKeyword && activeKeyword !== "all") {
+				// Get color based on trend keyword
+				const markerColor = getCategoryColor(index);
+	
+				// Create pin SVG with rating number with one decimal place
+				const pinSVG = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+			  <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+				<feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3"/>
+			  </filter>
+			  <path d="M12,0C5.4,0,0,5.4,0,12c0,7.2,12,24,12,24s12-16.8,12-24C24,5.4,18.6,0,12,0z" fill="${markerColor}" filter="url(#shadow)"/>
+			  <circle cx="12" cy="12" r="8" fill="white" opacity="0.4"/>
+			  <circle cx="12" cy="12" r="6" fill="white"/>
+			  <text x="12" y="15" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle" fill="${markerColor}">${formattedRating}</text>
+			</svg>
+		  `;
+	
+				// Convert SVG to data URL
+				const svgUrl =
+					"data:image/svg+xml;charset=UTF-8," +
+					encodeURIComponent(pinSVG);
+	
+				// Set custom icon
+				marker.setIcon({
+					url: svgUrl,
+					scaledSize: new google.maps.Size(30, 45),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(15, 45),
+					labelOrigin: new google.maps.Point(15, labelOriginY),
+				});
+	
+				// Get the summarized restaurant name
+				let displayName = restaurant.name;
+				if (restaurant.name.length > 8) {
+					displayName = restaurant.name.substring(0, 7) + "…";
+				}
+	
+				// Add label with restaurant name and more transparent background
+				marker.setLabel({
+					text: displayName,
+					color: "#333333",
+					fontSize: "10px",
+					fontWeight: "bold",
+					className: `marker-label marker-label-${
+						index % 2
+					} marker-label-transparent`,
+				});
+	
+				// Set z-index to bring selected markers to front
+				if (activeInfoWindow === restaurant.id) {
+					marker.setZIndex(1000);
+				} else {
+					marker.setZIndex(100);
+				}
+			} else {
+				// For "all" categories, use category-colored markers
+				const markerColor = getCategoryColor(index);
+	
+				// Create category pin SVG with rating number with one decimal place
+				const categoryPinSVG = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+			  <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+				<feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.3"/>
+			  </filter>
+			  <path d="M12,0C5.4,0,0,5.4,0,12c0,7.2,12,24,12,24s12-16.8,12-24C24,5.4,18.6,0,12,0z" fill="${markerColor}" filter="url(#shadow)"/>
+			  <circle cx="12" cy="12" r="8" fill="white" opacity="0.4"/>
+			  <circle cx="12" cy="12" r="6" fill="white"/>
+			  <text x="12" y="15" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle" fill="${markerColor}">${formattedRating}</text>
+			</svg>
+		  `;
+	
+				// Convert SVG to data URL
+				const categoryPinUrl =
+					"data:image/svg+xml;charset=UTF-8," +
+					encodeURIComponent(categoryPinSVG);
+	
+				// Set custom icon
+				marker.setIcon({
+					url: categoryPinUrl,
+					scaledSize: new google.maps.Size(30, 45),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(15, 45),
+					labelOrigin: new google.maps.Point(15, labelOriginY),
+				});
+	
+				if (activeKeyword && !showCategoryLabels) {
+					marker.setLabel({
+						text: restaurant.trendkeyword,
+						color: "#333333",
+						fontSize: "10px",
+						fontWeight: "bold",
+						className: `marker-label marker-label-${
+							index % 2
+						} marker-label-transparent`,
+					});
+				} else if (showCategoryLabels) {
+					marker.setLabel({
+						text: restaurant.trendkeyword,
+						color: "#333333",
+						fontSize: "10px",
+						fontWeight: "bold",
+						className: `marker-label marker-label-${
+							index % 2
+						} marker-label-transparent`,
+					});
+				} else {
+					marker.setLabel(null);
+				}
+			}
+		};
         if (!map || !restaurants.length) return;
 
         // Keep track of current restaurant IDs
@@ -383,152 +527,8 @@ const Map: React.FC<MapProps> = ({
         restaurants,
         activeKeyword,
         showCategoryLabels,
+		activeInfoWindow
     ]);
-
-    // Helper function to create custom marker with label
-    const updateMarkerIcon = (
-        marker: google.maps.Marker,
-        restaurant: Restaurant,
-        activeKeyword: string | null,
-        index: number,
-        showCategoryLabels: boolean
-    ) => {
-        const colorList = [
-            "#4CAF50", // Green
-            "#FF9800", // Orange
-            "#F44336", // Red
-            "#9C27B0", // Purple
-            "#FF5722", // Deep Orange
-            "#795548", // Brown
-            "#8BC34A", // Light Green
-            "#E91E63", // Pink
-            "#673AB7", // Deep Purple
-            "#009688", // Teal
-            // 他にも色を追加可能
-        ];
-
-        // キーワードごとに色を割り当てる
-        const getCategoryColor = (index: number): string => {
-            // 色リストのインデックスに基づいて色を取得（順番に割り当て）
-            return colorList[index % colorList.length]; // 配列の長さを超えたら再利用
-        };
-
-        // Calculate vertical offset to prevent overlapping labels
-        const labelOriginY = index % 2 === 0 ? 35 : 45;
-
-        // Format rating to show one decimal place
-        const formattedRating = restaurant.rating.toFixed(1);
-
-        if (activeKeyword && activeKeyword !== "all") {
-            // Get color based on trend keyword
-            const markerColor = getCategoryColor(index);
-
-            // Create pin SVG with rating number with one decimal place
-            const pinSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
-          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3"/>
-          </filter>
-          <path d="M12,0C5.4,0,0,5.4,0,12c0,7.2,12,24,12,24s12-16.8,12-24C24,5.4,18.6,0,12,0z" fill="${markerColor}" filter="url(#shadow)"/>
-          <circle cx="12" cy="12" r="8" fill="white" opacity="0.4"/>
-          <circle cx="12" cy="12" r="6" fill="white"/>
-          <text x="12" y="15" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle" fill="${markerColor}">${formattedRating}</text>
-        </svg>
-      `;
-
-            // Convert SVG to data URL
-            const svgUrl =
-                "data:image/svg+xml;charset=UTF-8," +
-                encodeURIComponent(pinSVG);
-
-            // Set custom icon
-            marker.setIcon({
-                url: svgUrl,
-                scaledSize: new google.maps.Size(30, 45),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(15, 45),
-                labelOrigin: new google.maps.Point(15, labelOriginY),
-            });
-
-            // Get the summarized restaurant name
-            let displayName = restaurant.name;
-            if (restaurant.name.length > 8) {
-                displayName = restaurant.name.substring(0, 7) + "…";
-            }
-
-            // Add label with restaurant name and more transparent background
-            marker.setLabel({
-                text: displayName,
-                color: "#333333",
-                fontSize: "10px",
-                fontWeight: "bold",
-                className: `marker-label marker-label-${
-                    index % 2
-                } marker-label-transparent`,
-            });
-
-            // Set z-index to bring selected markers to front
-            if (activeInfoWindow === restaurant.id) {
-                marker.setZIndex(1000);
-            } else {
-                marker.setZIndex(100);
-            }
-        } else {
-            // For "all" categories, use category-colored markers
-            const markerColor = getCategoryColor(index);
-
-            // Create category pin SVG with rating number with one decimal place
-            const categoryPinSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
-          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.3"/>
-          </filter>
-          <path d="M12,0C5.4,0,0,5.4,0,12c0,7.2,12,24,12,24s12-16.8,12-24C24,5.4,18.6,0,12,0z" fill="${markerColor}" filter="url(#shadow)"/>
-          <circle cx="12" cy="12" r="8" fill="white" opacity="0.4"/>
-          <circle cx="12" cy="12" r="6" fill="white"/>
-          <text x="12" y="15" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle" fill="${markerColor}">${formattedRating}</text>
-        </svg>
-      `;
-
-            // Convert SVG to data URL
-            const categoryPinUrl =
-                "data:image/svg+xml;charset=UTF-8," +
-                encodeURIComponent(categoryPinSVG);
-
-            // Set custom icon
-            marker.setIcon({
-                url: categoryPinUrl,
-                scaledSize: new google.maps.Size(30, 45),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(15, 45),
-                labelOrigin: new google.maps.Point(15, labelOriginY),
-            });
-
-            if (activeKeyword && !showCategoryLabels) {
-                marker.setLabel({
-                    text: restaurant.trendkeyword,
-                    color: "#333333",
-                    fontSize: "10px",
-                    fontWeight: "bold",
-                    className: `marker-label marker-label-${
-                        index % 2
-                    } marker-label-transparent`,
-                });
-            } else if (showCategoryLabels) {
-                marker.setLabel({
-                    text: restaurant.trendkeyword,
-                    color: "#333333",
-                    fontSize: "10px",
-                    fontWeight: "bold",
-                    className: `marker-label marker-label-${
-                        index % 2
-                    } marker-label-transparent`,
-                });
-            } else {
-                marker.setLabel(null);
-            }
-        }
-    };
 
     return (
         <div className="relative w-full h-full">
