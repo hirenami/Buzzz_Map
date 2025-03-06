@@ -12,7 +12,6 @@ import (
 	svix "github.com/svix/svix-webhooks/go"
 )
 
-// WebhookPayload はClerkから送信されるWebhookのペイロードを表します
 type WebhookPayload struct {
 	Type string `json:"type"`
 	Data  struct {
