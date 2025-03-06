@@ -36,7 +36,11 @@ func (h *Handler) MapGooglePlacesToRestaurantsController(w http.ResponseWriter, 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(restaurants)
-	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(restaurants); err != nil {
+		log.Printf("Error encoding response: %v", err)
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
 }
