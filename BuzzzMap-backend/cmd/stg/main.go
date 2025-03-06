@@ -24,6 +24,7 @@ func main() {
 		log.Fatal("fail :Getenv")
 	}
 
+	// データベース接続情報
 	dsn := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true",
 		mysqlUser, mysqlUserPwd, mysqlHost, mysqlDatabase)
 
