@@ -8,7 +8,7 @@ import ListTabHeader from "./components/ListTabHeader";
 import TrendingList from "./components/TrendingList";
 import TabBar from "./components/TabBar";
 import { Info, ChevronUp } from "lucide-react";
-import getTrend from "./api/getTrend";
+import getTrend from "./services/getTrend";
 import UserTab from "./components/UserTab";
 
 function App() {
@@ -33,8 +33,9 @@ function App() {
         useState<boolean>(false);
     const [autoSwitchEnabled, setAutoSwitchEnabled] = useState<boolean>(false);
     const [currentKeywordIndex, setCurrentKeywordIndex] = useState<number>(0);
-    const [activeMode, setActiveMode] = useState<'trend' | 'event'>('trend'); // 追加
-    const [activeEventCategory, setActiveEventCategory] = useState<string>('all');
+    const [activeMode, setActiveMode] = useState<"trend" | "event">("trend"); // 追加
+    const [activeEventCategory, setActiveEventCategory] =
+        useState<string>("all");
     const autoSwitchIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const dragHandleRef = useRef<HTMLDivElement>(null);
     const initialDataLoadedRef = useRef<boolean>(false);
@@ -68,12 +69,13 @@ function App() {
                     );
 
                     const results = await Promise.all(allRestaurantsPromises);
-					console.log("Results from mapService:", results);
+                    console.log("Results from mapService:", results);
 
                     // Flatten the array of arrays
-                    const allRestaurants = results.flat().filter(item => item !== null);
-					console.log("Flattened Restaurants:", allRestaurants);
-
+                    const allRestaurants = results
+                        .flat()
+                        .filter((item) => item !== null);
+                    console.log("Flattened Restaurants:", allRestaurants);
 
                     setRestaurants(allRestaurants);
 
@@ -83,14 +85,16 @@ function App() {
 
                     // Get one restaurant from each category
                     allRestaurants.forEach((restaurant) => {
-                        if (!includedKeywords.has(restaurant.trendKeyword)) {
-                            representativeRestaurants.push(restaurant);
-                            includedKeywords.add(restaurant.trendKeyword);
-                        }
-						console.log("Restaurant:", restaurant);
+                        representativeRestaurants.push(restaurant);
+                        includedKeywords.add(restaurant.trendkeyword);
+
+                        console.log("Restaurant:", restaurant);
                     });
 
-					console.log("Representative Restaurants:", representativeRestaurants);
+                    console.log(
+                        "Representative Restaurants:",
+                        representativeRestaurants
+                    );
 
                     setFilteredRestaurants(representativeRestaurants);
                 } catch (error) {
@@ -113,17 +117,17 @@ function App() {
 
             // Get one restaurant from each category
             restaurants.forEach((restaurant) => {
-                if (restaurant == null || restaurant.trendKeyword == null) return;
-                if (!includedKeywords.has(restaurant.trendKeyword)) {
-                    representativeRestaurants.push(restaurant);
-                    includedKeywords.add(restaurant.trendKeyword);
-                }
+                if (restaurant == null || restaurant.trendkeyword == null)
+                    return;
+
+                representativeRestaurants.push(restaurant);
+                includedKeywords.add(restaurant.trendkeyword);
             });
 
             setFilteredRestaurants(representativeRestaurants);
         } else {
             setFilteredRestaurants(
-                restaurants.filter((r) => r.trendKeyword === activeKeyword)
+                restaurants.filter((r) => r.trendkeyword === activeKeyword)
             );
         }
     }, [activeKeyword, restaurants]);
@@ -135,7 +139,7 @@ function App() {
             if (keyword === "all") {
                 setActiveKeyword(null);
                 setSelectedRestaurant(null);
-                setActiveMode('trend'); // 必要に応じてモードをリセット
+                setActiveMode("trend"); // 必要に応じてモードをリセット
                 return;
             }
 
@@ -145,7 +149,7 @@ function App() {
 
             // Check if we already have enough restaurants for this keyword
             const existingRestaurants = restaurants.filter(
-                (r) => r.trendKeyword === keyword
+                (r) => r.trendkeyword === keyword
             );
             if (existingRestaurants.length >= 5) {
                 // We already have enough restaurants for this keyword
@@ -170,7 +174,7 @@ function App() {
 
                     // Remove existing restaurants with this keyword
                     const filteredRestaurants = updatedRestaurants.filter(
-                        (r) => r.trendKeyword !== keyword
+                        (r) => r.trendkeyword !== keyword
                     );
 
                     // Add the new restaurants
@@ -193,6 +197,8 @@ function App() {
     // Handle restaurant selection
     const handleRestaurantClick = (restaurant: Restaurant) => {
         setSelectedRestaurant(restaurant);
+		console.log("Selected Restaurant:", restaurant);
+		console.log("activeTab:", activeTab);
 
         // If we're in the trending tab, switch to the explore tab to show the restaurant on the map
         if (activeTab === "trending") {
@@ -431,14 +437,20 @@ function App() {
         <div className="flex flex-col h-full relative bg-white">
             {/* ListTabHeader inserted */}
             <div className="p-2 pt-3">
-              <ListTabHeader
-                activeMode={activeMode} // 修正
-                onModeChange={setActiveMode} // 修正
-                activeKeyword={activeKeyword}
-              />
+                <ListTabHeader
+                    activeMode={activeMode} // 修正
+                    onModeChange={setActiveMode} // 修正
+                    activeKeyword={activeKeyword}
+                />
             </div>
             {/* Full screen content area */}
-            <div className={`flex-1 overflow-hidden transition-opacity duration-100 ${tabChangeAnimation ? "opacity-0 transform translate-y-4" : "opacity-100 transform translate-y-0"}`}>
+            <div
+                className={`flex-1 overflow-hidden transition-opacity duration-100 ${
+                    tabChangeAnimation
+                        ? "opacity-0 transform translate-y-4"
+                        : "opacity-100 transform translate-y-0"
+                }`}
+            >
                 <TrendingList
                     keywords={trending}
                     activeKeyword={activeKeyword}
@@ -453,7 +465,13 @@ function App() {
     const userTabContent = (
         <div className="flex flex-col h-full relative bg-white">
             {/* Full screen content area */}
-            <div className={`flex-1 overflow-hidden transition-opacity duration-100 ${tabChangeAnimation ? "opacity-0 transform translate-y-4" : "opacity-100 transform translate-y-0"}`}>
+            <div
+                className={`flex-1 overflow-hidden transition-opacity duration-100 ${
+                    tabChangeAnimation
+                        ? "opacity-0 transform translate-y-4"
+                        : "opacity-100 transform translate-y-0"
+                }`}
+            >
                 <UserTab
                     keywords={trending}
                     onKeywordClick={handleKeywordClick}

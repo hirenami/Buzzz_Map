@@ -13,9 +13,9 @@ export interface Restaurant {
 	lat: number;
 	lng: number;
 	rating: number;
-	priceLevel: number;
-	trendKeyword: string;
-	photoUrl?: string;
+	price_level: number;
+	trendkeyword: string;
+	photo_url?: string;
 	isRealData?: boolean;
 }
 export interface MapOptions {
@@ -58,7 +58,7 @@ export interface Bookmark {
 export interface CategoryTab {
 	id: string;
 	name: string;
-  }
+}
 
 export interface Event {
 	id: string;

@@ -19,7 +19,7 @@ const Map: React.FC<MapProps> = ({
 }) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
-    const [,setMarkers] = useState<google.maps.Marker[]>([]);
+    const [, setMarkers] = useState<google.maps.Marker[]>([]);
     const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
         null
     );
@@ -269,9 +269,20 @@ const Map: React.FC<MapProps> = ({
                         const content = document.createElement("div");
                         content.className = "p-2";
                         content.innerHTML = `
-              <div class="p-1">
-                <h3 class="font-bold text-sm">${restaurant.name}</h3>
-                <div class="flex items-center mt-1">
+              <div class="flex flex-col">
+                <div class="relative">
+                  <img src="${restaurant.photo_url}" alt="${
+                            restaurant.name
+                        }" class="w-full h-32 object-cover rounded-lg mb-2" />
+                  <div class="absolute top-0 left-0 px-2 py-1 bg-opacity-70 bg-black text-white text-xs font-semibold rounded-br-lg">
+                    ${restaurant.rating} <span class="ml-1">⭐</span>
+                  </div>
+                </div>
+                <h3 class="font-semibold text-lg text-gray-800">${
+                    restaurant.name
+                }</h3>
+                <p class="text-sm text-gray-600 mt-1">${restaurant.address}</p>
+                <div class="mt-2 flex items-center">
                   <div class="flex items-center">
                     ${Array(5)
                         .fill(0)
@@ -288,21 +299,27 @@ const Map: React.FC<MapProps> = ({
                         )
                         .join("")}
                   </div>
-                  <div class="flex items-center ml-2 text-gray-600">
-                    ${Array(restaurant.priceLevel)
-                        .fill(0)
-                        .map(
-                            () =>
-                                `<svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                      </svg>`
-                        )
-                        .join("")}
-                  </div>
+                  <div class="ml-2 text-gray-600">
+                ${(() => {
+                    switch (restaurant.price_level) {
+                        case 0:
+                            return `<span class="text-sm">低価格</span>`;
+                        case 1:
+                            return `<span class="text-sm">やや低価格</span>`;
+                        case 2:
+                            return `<span class="text-sm">標準価格</span>`;
+                        case 3:
+                            return `<span class="text-sm">やや高価格</span>`;
+                        case 4:
+                            return `<span class="text-sm">高価格</span>`;
+                        default:
+                            return null;
+                    }
+                })()}
+              </div>
                 </div>
                 <div class="mt-2">
-                  <button class="text-xs bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded-full transition-colors shadow-sm">
+                  <button class="text-xs bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded-full transition-colors shadow-sm w-full" data-action="details">
                     詳細を見る
                   </button>
                 </div>
@@ -312,7 +329,7 @@ const Map: React.FC<MapProps> = ({
                         // Add click event to the "詳細を見る" button
                         setTimeout(() => {
                             const detailButton =
-                                content.querySelector("button");
+								content.querySelector('button[data-action="details"]');
                             if (detailButton) {
                                 detailButton.addEventListener("click", (e) => {
                                     e.preventDefault();
@@ -327,11 +344,6 @@ const Map: React.FC<MapProps> = ({
                         infoWindow.setContent(content);
                         infoWindow.open(map, marker);
                         setActiveInfoWindow(restaurant.id);
-                    }
-
-                    // Call the onMarkerClick callback
-                    if (onMarkerClick) {
-                        onMarkerClick(restaurant);
                     }
                 });
 
@@ -406,7 +418,7 @@ const Map: React.FC<MapProps> = ({
 
         if (activeKeyword && activeKeyword !== "all") {
             // Get color based on trend keyword
-            const markerColor = getCategoryColor(restaurant.trendKeyword);
+            const markerColor = getCategoryColor(restaurant.trendkeyword);
 
             // Create pin SVG with rating number with one decimal place
             const pinSVG = `
@@ -437,7 +449,7 @@ const Map: React.FC<MapProps> = ({
 
             // Get the summarized restaurant name
             let displayName = restaurant.name;
-            if(restaurant.name.length > 8) {
+            if (restaurant.name.length > 8) {
                 displayName = restaurant.name.substring(0, 7) + "…";
             }
 
@@ -460,7 +472,7 @@ const Map: React.FC<MapProps> = ({
             }
         } else {
             // For "all" categories, use category-colored markers
-            const markerColor = getCategoryColor(restaurant.trendKeyword);
+            const markerColor = getCategoryColor(restaurant.trendkeyword);
 
             // Create category pin SVG with rating number with one decimal place
             const categoryPinSVG = `
@@ -492,7 +504,7 @@ const Map: React.FC<MapProps> = ({
             // Add label with keyword name when showing "all" categories
             if (showCategoryLabels) {
                 marker.setLabel({
-                    text: restaurant.trendKeyword,
+                    text: restaurant.trendkeyword,
                     color: "#333333",
                     fontSize: "10px",
                     fontWeight: "bold",

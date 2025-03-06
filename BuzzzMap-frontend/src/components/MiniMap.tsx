@@ -9,10 +9,7 @@ interface MiniMapProps {
     onMapClick: () => void;
 }
 
-const MiniMap: React.FC<MiniMapProps> = ({
-    restaurants,
-    onMapClick,
-}) => {
+const MiniMap: React.FC<MiniMapProps> = ({ restaurants, onMapClick }) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -193,7 +190,7 @@ const MiniMap: React.FC<MiniMapProps> = ({
         if (!map) {
             initMap();
         }
-    }, [onMapClick, restaurants]);
+    }, [onMapClick, restaurants, map]);
 
     // Update map center when restaurants change
     useEffect(() => {
@@ -248,7 +245,7 @@ const MiniMap: React.FC<MiniMapProps> = ({
                     return colorMap[keyword] || "#2196F3"; // Default blue
                 };
 
-                const markerColor = getCategoryColor(restaurant.trendKeyword);
+                const markerColor = getCategoryColor(restaurant.trendkeyword);
 
                 // Format rating to show one decimal place
                 const formattedRating = restaurant.rating.toFixed(1);

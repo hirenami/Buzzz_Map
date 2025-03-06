@@ -151,7 +151,7 @@ const UserTab: React.FC<UserTabProps> = ({ onKeywordClick }) => {
                             >
                                 <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 mr-3">
                                     <img
-                                        src={restaurant.photoUrl}
+                                        src={restaurant.photo_url}
                                         alt={restaurant.name}
                                         className="w-full h-full object-cover"
                                     />
@@ -171,7 +171,7 @@ const UserTab: React.FC<UserTabProps> = ({ onKeywordClick }) => {
                                             |
                                         </span>
                                         <span className="text-xs text-gray-500">
-                                            {restaurant.trendKeyword}
+                                            {restaurant.trendkeyword}
                                         </span>
                                     </div>
                                 </div>
