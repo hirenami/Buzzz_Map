@@ -5,7 +5,6 @@ import { Restaurant, TrendingKeyword } from "./types";
 import Map from "./components/Map";
 import ExploreTabHeader from "./components/ExploreTabHeader";
 import ListTabHeader from "./components/ListTabHeader";
-import RestaurantList from "./components/RestaurantList";
 import TrendingList from "./components/TrendingList";
 import TabBar from "./components/TabBar";
 import { Info, ChevronUp } from "lucide-react";
@@ -29,7 +28,7 @@ function App() {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [startY, setStartY] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [showRestaurants, setShowRestaurants] = useState<boolean>(false);
+    const [, setShowRestaurants] = useState<boolean>(false);
     const [tabChangeAnimation, setTabChangeAnimation] =
         useState<boolean>(false);
     const [autoSwitchEnabled, setAutoSwitchEnabled] = useState<boolean>(false);
@@ -221,11 +220,6 @@ function App() {
         }
     };
 
-    // Handle back button click
-    const handleBackClick = () => {
-        setShowRestaurants(false);
-    };
-
     // Handle mini map click from trending tab
     const handleMiniMapClick = (keyword: string) => {
         // Set the active keyword
@@ -348,7 +342,7 @@ function App() {
                 clearInterval(autoSwitchIntervalRef.current);
             }
         };
-    }, [autoSwitchEnabled, currentKeywordIndex, handleKeywordClick]);
+    }, [autoSwitchEnabled, currentKeywordIndex, handleKeywordClick, trending]);
 
     // Explore tab content
     const exploreTabContent = (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TrendingKeyword, Event } from "../types";
+import { TrendingKeyword, Event, Restaurant } from "../types";
 import { TrendingUp, Newspaper, Store } from "lucide-react";
 import NewsArticleList from "./NewsArticleList";
 import RestaurantList from "./RestaurantList";
@@ -27,7 +27,7 @@ const TrendingList: React.FC<TrendingListProps> = ({
     const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
     const [viewMode, setViewMode] = useState<"keywords" | "articles" | "restaurants">("keywords");
     const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
-    const [restaurants, setRestaurants] = useState<any[]>([]);
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // イベント関連の状態
