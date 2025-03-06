@@ -12,14 +12,9 @@ import (
 	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/handler"
 	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/sqlc"
 	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/usecase"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 	mysqlUser := os.Getenv("MYSQL_USER")
 	mysqlUserPwd := os.Getenv("MYSQL_PASSWORD")
 	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
