@@ -3,8 +3,8 @@ import { useGeolocation } from "./hooks/useGeolocation";
 import { mapService } from "./services/mapService";
 import { Restaurant, TrendingKeyword } from "./types";
 import Map from "./components/Map";
-import TrendingKeywords from "./components/TrendingKeywords";
-import RestaurantList from "./components/RestaurantList";
+import ExploreTabHeader from "./components/ExploreTabHeader";
+import ListTabHeader from "./components/ListTabHeader";
 import TrendingList from "./components/TrendingList";
 import TabBar from "./components/TabBar";
 import { Info, ChevronUp } from "lucide-react";
@@ -28,11 +28,13 @@ function App() {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [startY, setStartY] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [showRestaurants, setShowRestaurants] = useState<boolean>(false);
+    const [, setShowRestaurants] = useState<boolean>(false);
     const [tabChangeAnimation, setTabChangeAnimation] =
         useState<boolean>(false);
     const [autoSwitchEnabled, setAutoSwitchEnabled] = useState<boolean>(false);
     const [currentKeywordIndex, setCurrentKeywordIndex] = useState<number>(0);
+    const [activeMode, setActiveMode] = useState<'trend' | 'event'>('trend'); // 追加
+    const [activeEventCategory, setActiveEventCategory] = useState<string>('all');
     const autoSwitchIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const dragHandleRef = useRef<HTMLDivElement>(null);
     const initialDataLoadedRef = useRef<boolean>(false);
@@ -83,7 +85,7 @@ function App() {
                     allRestaurants.forEach((restaurant) => {
                         if (!includedKeywords.has(restaurant.trendKeyword)) {
                             representativeRestaurants.push(restaurant);
-                            includedKeywords.add(restaurant.trendkeyword);
+                            includedKeywords.add(restaurant.trendKeyword);
                         }
 						console.log("Restaurant:", restaurant);
                     });
@@ -133,6 +135,7 @@ function App() {
             if (keyword === "all") {
                 setActiveKeyword(null);
                 setSelectedRestaurant(null);
+                setActiveMode('trend'); // 必要に応じてモードをリセット
                 return;
             }
 
@@ -215,11 +218,6 @@ function App() {
                 setShowRestaurants(false);
             }
         }
-    };
-
-    // Handle back button click
-    const handleBackClick = () => {
-        setShowRestaurants(false);
     };
 
     // Handle mini map click from trending tab
@@ -344,7 +342,7 @@ function App() {
                 clearInterval(autoSwitchIntervalRef.current);
             }
         };
-    }, [autoSwitchEnabled, currentKeywordIndex, handleKeywordClick]);
+    }, [autoSwitchEnabled, currentKeywordIndex, handleKeywordClick, trending]);
 
     // Explore tab content
     const exploreTabContent = (
@@ -376,13 +374,17 @@ function App() {
                 }`}
             >
                 <div className="p-2 pt-3">
-                    <TrendingKeywords
-                        keywords={trending}
+                    <ExploreTabHeader
+                        activeMode={activeMode}
+                        onModeChange={(mode) => setActiveMode(mode)}
                         activeKeyword={activeKeyword}
+                        keywords={trending}
                         onKeywordClick={handleKeywordClick}
                         isLoading={isLoading}
                         autoSwitchEnabled={autoSwitchEnabled}
                         onToggleAutoSwitch={toggleAutoSwitch}
+                        activeEventCategory={activeEventCategory}
+                        onEventCategoryChange={setActiveEventCategory}
                     />
                 </div>
             </div>
@@ -427,33 +429,23 @@ function App() {
     // Trending tab content
     const trendingTabContent = (
         <div className="flex flex-col h-full relative bg-white">
+            {/* ListTabHeader inserted */}
+            <div className="p-2 pt-3">
+              <ListTabHeader
+                activeMode={activeMode} // 修正
+                onModeChange={setActiveMode} // 修正
+                activeKeyword={activeKeyword}
+              />
+            </div>
             {/* Full screen content area */}
-            <div
-                className={`flex-1 overflow-hidden transition-opacity duration-100 ${
-                    tabChangeAnimation
-                        ? "opacity-0 transform translate-y-4"
-                        : "opacity-100 transform translate-y-0"
-                }`}
-            >
-                {showRestaurants ? (
-                    <div className="h-full overflow-y-auto animate-fade-in">
-                        <RestaurantList
-                            restaurants={filteredRestaurants}
-                            selectedRestaurant={selectedRestaurant}
-                            onRestaurantClick={handleRestaurantClick}
-                            onBackClick={handleBackClick}
-                        />
-                    </div>
-                ) : (
-                    <div className="h-full">
-                        <TrendingList
-                            keywords={trending}
-                            activeKeyword={activeKeyword}
-                            onKeywordClick={handleKeywordClick}
-                            onMapClick={handleMiniMapClick}
-                        />
-                    </div>
-                )}
+            <div className={`flex-1 overflow-hidden transition-opacity duration-100 ${tabChangeAnimation ? "opacity-0 transform translate-y-4" : "opacity-100 transform translate-y-0"}`}>
+                <TrendingList
+                    keywords={trending}
+                    activeKeyword={activeKeyword}
+                    onKeywordClick={handleKeywordClick}
+                    onMapClick={handleMiniMapClick}
+                    activeMode={activeMode} // 修正
+                />
             </div>
         </div>
     );
@@ -461,13 +453,7 @@ function App() {
     const userTabContent = (
         <div className="flex flex-col h-full relative bg-white">
             {/* Full screen content area */}
-            <div
-                className={`flex-1 overflow-hidden transition-opacity duration-100 ${
-                    tabChangeAnimation
-                        ? "opacity-0 transform translate-y-4"
-                        : "opacity-100 transform translate-y-0"
-                }`}
-            >
+            <div className={`flex-1 overflow-hidden transition-opacity duration-100 ${tabChangeAnimation ? "opacity-0 transform translate-y-4" : "opacity-100 transform translate-y-0"}`}>
                 <UserTab
                     keywords={trending}
                     onKeywordClick={handleKeywordClick}
