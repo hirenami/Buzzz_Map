@@ -112,8 +112,6 @@ func (a *Api) GetNews(query string) ([]NewsArticle, error) {
 			Keyword:  query,
 		}
 
-		log.Printf("Article: %v\n", article)
-
 		// 取得したニュースデータをnewsDataに追加
 		newsData = append(newsData, article)
 	}
