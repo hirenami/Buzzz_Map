@@ -12,8 +12,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const API_KEY = "YOUR_GOOGLE_API_KEY" // 環境変数または適切なAPIキーに置き換え
-
 // Places APIのレスポンス構造体
 type PlacesResponse struct {
 	Results []struct {

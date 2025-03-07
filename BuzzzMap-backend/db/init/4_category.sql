@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS category;
+
+CREATE TABLE category(
+	category_id VARCHAR(255) PRIMARY KEY NOT NULL,
+	category_name VARCHAR(255) NOT NULL
+);

@@ -23,7 +23,7 @@ func Newhandler(usecase *usecase.Usecase) *Handler {
 func setCORSHeaders(w http.ResponseWriter) {
 	env := godotenv.Load()
 	if env != nil {
-		log.Println("Error loading .env file")
+		log.Println("Error loading .env file_cors")
 	}
 	host := os.Getenv("LOCALHOST")
 

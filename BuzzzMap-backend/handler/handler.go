@@ -12,6 +12,8 @@ func SetupRoutes(handler *Handler) *mux.Router {
 	r.HandleFunc("/getbookmark", handler.GetBookmark).Methods("GET", "OPTIONS")
 	r.HandleFunc("/createbookmark", handler.CreateBookmark).Methods("POST", "OPTIONS")
 	r.HandleFunc("/deletebookmark", handler.DeleteBookmark).Methods("POST", "OPTIONS")
+	r.HandleFunc("/writeevent", handler.Writedata).Methods("POST", "OPTIONS")
+	r.HandleFunc("/predict", handler.Predictdata).Methods("GET", "OPTIONS")
 
 	return r
 }
