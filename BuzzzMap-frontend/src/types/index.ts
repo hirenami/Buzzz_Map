@@ -61,16 +61,8 @@ export interface CategoryTab {
 }
 
 export interface Event {
-	id: string;
-	name: string;
-	description: string;
-	category: 'food-entertainment' | 'culture-art';
-	startDate: string;
-	endDate: string;
+	keyword: string;
 	location: string;
-	address: string;
-	lat: number;
-	lng: number;
-	photoUrl: string;
-	venueName: string;
-}
+	months: number;
+	increase_percentage: number;
+  }

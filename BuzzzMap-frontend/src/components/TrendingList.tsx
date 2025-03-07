@@ -3,7 +3,7 @@ import { TrendingKeyword, Event, Restaurant } from "../types";
 import { TrendingUp, Newspaper, Store } from "lucide-react";
 import NewsArticleList from "./NewsArticleList";
 import RestaurantList from "./RestaurantList";
-import EventList from "./EventList";  // Make sure EventList is defined and imported
+import EventList from "./EventList"; // Make sure EventList is defined and imported
 import { mapService } from "../services/mapService";
 import MiniMap from "./MiniMap";
 
@@ -12,7 +12,7 @@ interface TrendingListProps {
     activeKeyword: string | null;
     onKeywordClick: (keyword: string) => void;
     onMapClick?: (keyword: string) => void;
-    activeMode: 'trend' | 'event';
+    activeMode: "trend" | "event";
 }
 
 const TrendingList: React.FC<TrendingListProps> = ({
@@ -23,9 +23,15 @@ const TrendingList: React.FC<TrendingListProps> = ({
     activeMode,
 }) => {
     const [isVisible, setIsVisible] = useState(false);
-    const [prevKeyword, setPrevKeyword] = useState<string | null>(activeKeyword);
-    const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
-    const [viewMode, setViewMode] = useState<"keywords" | "articles" | "restaurants">("keywords");
+    const [prevKeyword, setPrevKeyword] = useState<string | null>(
+        activeKeyword
+    );
+    const [slideDirection, setSlideDirection] = useState<
+        "left" | "right" | null
+    >(null);
+    const [viewMode, setViewMode] = useState<
+        "keywords" | "articles" | "restaurants"
+    >("keywords");
     const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,11 +53,13 @@ const TrendingList: React.FC<TrendingListProps> = ({
         setSelectedEvent(null);
     };
 
+    const url = import.meta.env.VITE_LOCALHOST;
+
     // イベントデータの取得
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch("/api/events"); // 実際のAPIエンドポイントに置き換えてください
+                const response = await fetch(`${url}/getlongtrend`); // 実際のAPIエンドポイントに置き換えてください
                 const data: Event[] = await response.json();
                 setEvents(data);
             } catch (error) {
@@ -60,7 +68,7 @@ const TrendingList: React.FC<TrendingListProps> = ({
         };
 
         fetchEvents();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Add animation when component mounts
     useEffect(() => {
@@ -69,11 +77,22 @@ const TrendingList: React.FC<TrendingListProps> = ({
 
     // Handle animation when active keyword changes
     useEffect(() => {
-        if (activeKeyword !== prevKeyword && prevKeyword !== null && activeKeyword !== null) {
-            const currentIndex = keywords.findIndex((k) => k.keyword === activeKeyword);
-            const prevIndex = keywords.findIndex((k) => k.keyword === prevKeyword);
+        if (
+            activeKeyword !== prevKeyword &&
+            prevKeyword !== null &&
+            activeKeyword !== null
+        ) {
+            const currentIndex = keywords.findIndex(
+                (k) => k.keyword === activeKeyword
+            );
+            const prevIndex = keywords.findIndex(
+                (k) => k.keyword === prevKeyword
+            );
 
-            if (currentIndex > prevIndex || (prevIndex === keywords.length - 1 && currentIndex === 0)) {
+            if (
+                currentIndex > prevIndex ||
+                (prevIndex === keywords.length - 1 && currentIndex === 0)
+            ) {
                 setSlideDirection("left");
             } else {
                 setSlideDirection("right");
@@ -123,7 +142,10 @@ const TrendingList: React.FC<TrendingListProps> = ({
         }
     };
 
-    const formatTrendInfo = (timestamp?: number, percentage?: number): string => {
+    const formatTrendInfo = (
+        timestamp?: number,
+        percentage?: number
+    ): string => {
         if (!timestamp || !percentage) return "";
 
         const now = Math.floor(Date.now() / 1000);
@@ -158,7 +180,9 @@ const TrendingList: React.FC<TrendingListProps> = ({
     }
 
     if (viewMode === "restaurants" && selectedKeyword) {
+		
         return (
+			restaurants ? (
             <div className="h-full flex flex-col">
                 <div className="h-1/3 p-2">
                     <MiniMap
@@ -176,11 +200,20 @@ const TrendingList: React.FC<TrendingListProps> = ({
                     />
                 </div>
             </div>
+			) : (
+				<div className="h-full flex items-center justify-center">
+					<p className="text-gray-500 text-sm">データが見つかりませんでした</p>
+				</div>
+			)
         );
     }
 
     return (
-        <div className={`h-full bg-white pt-2 pb-16 px-3 overflow-y-auto transition-opacity duration-100 ${isVisible ? "opacity-100" : "opacity-0"}`}>
+        <div
+            className={`h-full bg-white pt-2 pb-16 px-3 overflow-y-auto transition-opacity duration-100 ${
+                isVisible ? "opacity-100" : "opacity-0"
+            }`}
+        >
             <div className="flex items-center justify-between mb-3 animate-slide-down">
                 <h2 className="text-sm font-bold flex items-center">
                     <TrendingUp className="w-4 h-4 text-red-500 mr-2" />
@@ -188,43 +221,74 @@ const TrendingList: React.FC<TrendingListProps> = ({
                 </h2>
             </div>
 
-            {activeMode === 'trend' ? (
+            {activeMode === "trend" ? (
                 <div className="space-y-2">
                     {keywords.map((item, index) => (
                         <div
                             key={item.rank}
-                            className={`py-2 px-3 rounded-lg transition-colors border animate-scale-in ${slideDirection === "left" && activeKeyword === item.keyword ? "animate-slide-in-left" : slideDirection === "right" && activeKeyword === item.keyword ? "animate-slide-in-right" : ""}`}
+                            className={`py-2 px-3 rounded-lg transition-colors border animate-scale-in ${
+                                slideDirection === "left" &&
+                                activeKeyword === item.keyword
+                                    ? "animate-slide-in-left"
+                                    : slideDirection === "right" &&
+                                      activeKeyword === item.keyword
+                                    ? "animate-slide-in-right"
+                                    : ""
+                            }`}
                             style={{
                                 animationDelay: `${index * 20}ms`,
                                 animationFillMode: "both",
-                                backgroundColor: activeKeyword === item.keyword ? "rgba(239, 246, 255, 1)" : "white",
-                                borderColor: activeKeyword === item.keyword ? "rgba(191, 219, 254, 1)" : "rgba(243, 244, 246, 1)",
+                                backgroundColor:
+                                    activeKeyword === item.keyword
+                                        ? "rgba(239, 246, 255, 1)"
+                                        : "white",
+                                borderColor:
+                                    activeKeyword === item.keyword
+                                        ? "rgba(191, 219, 254, 1)"
+                                        : "rgba(243, 244, 246, 1)",
                             }}
                         >
                             <div className="flex items-center">
                                 <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center mr-2 text-gray-500 font-medium text-xs">
                                     {item.rank}
                                 </div>
-                                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => onKeywordClick(item.keyword)}>
-                                    <h3 className="font-bold text-sm text-gray-900">{item.keyword}</h3>
-                                    {item.end_timestamp && item.increase_percentage && (
-                                        <div className="flex items-center mt-1 text-xs text-green-600 text-[11px]">
-                                            <span className="mr-1">🔥</span>
-                                            <span>{formatTrendInfo(item.end_timestamp, item.increase_percentage)}</span>
-                                        </div>
-                                    )}
+                                <div
+                                    className="flex-1 min-w-0 cursor-pointer"
+                                    onClick={() => onKeywordClick(item.keyword)}
+                                >
+                                    <h3 className="font-bold text-sm text-gray-900">
+                                        {item.keyword}
+                                    </h3>
+                                    {item.end_timestamp &&
+                                        item.increase_percentage && (
+                                            <div className="flex items-center mt-1 text-xs text-green-600 text-[11px]">
+                                                <span className="mr-1">🔥</span>
+                                                <span>
+                                                    {formatTrendInfo(
+                                                        item.end_timestamp,
+                                                        item.increase_percentage
+                                                    )}
+                                                </span>
+                                            </div>
+                                        )}
                                 </div>
                                 <div className="flex items-center ml-2 space-x-2">
                                     <button
                                         className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 hover:bg-purple-50 hover:border-purple-200 transition-colors"
-                                        onClick={(e) => { e.stopPropagation(); handleNewsClick(item.keyword); }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleNewsClick(item.keyword);
+                                        }}
                                         aria-label={`${item.keyword}のニュース記事を見る`}
                                     >
                                         <Newspaper className="w-4 h-4 text-purple-500" />
                                     </button>
                                     <button
                                         className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 hover:bg-blue-50 hover:border-blue-200 transition-colors"
-                                        onClick={(e) => { e.stopPropagation(); handleStoreClick(item.keyword); }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleStoreClick(item.keyword);
+                                        }}
                                         aria-label={`${item.keyword}の店舗を見る`}
                                     >
                                         <Store className="w-4 h-4 text-blue-500" />
@@ -235,18 +299,23 @@ const TrendingList: React.FC<TrendingListProps> = ({
                     ))}
                 </div>
             ) : (
-                <EventList 
-                    events={events} 
-                    selectedEvent={selectedEvent} 
-                    onEventClick={handleEventClick} 
-                    onBackClick={handleBackClick} 
+                <EventList
+                    events={events}
+                    selectedEvent={selectedEvent}
+                    onEventClick={handleEventClick}
+                    onBackClick={handleBackClick}
                 />
             )}
 
-            <div className="mt-4 bg-blue-50 p-3 rounded-lg border border-blue-100 animate-slide-up" style={{ animationDelay: "100ms", animationFillMode: "both" }}>
+            <div
+                className="mt-4 bg-blue-50 p-3 rounded-lg border border-blue-100 animate-slide-up"
+                style={{ animationDelay: "100ms", animationFillMode: "both" }}
+            >
                 <p className="text-xs text-blue-700 flex items-start">
                     <TrendingUp className="w-3 h-3 mr-1 mt-0.5 flex-shrink-0" />
-                    <span>トレンドアイテムをタップして、人気の食べ物や飲み物を提供するレストランを見つけましょう。</span>
+                    <span>
+                        トレンドアイテムをタップして、人気の食べ物や飲み物を提供するレストランを見つけましょう。
+                    </span>
                 </p>
             </div>
 
