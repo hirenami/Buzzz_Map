@@ -297,3 +297,17 @@
 .carousel-animate {
   animation: carousel-slide 60s linear infinite;
 }
+
+@media (max-width: 600px) {
+	body {
+	  height: auto; /* スマホ画面での高さ調整 */
+	  font-size: 14px; /* フォントサイズの調整 */
+	  padding: 10px;
+	}
+  
+	/* ページ全体が縦に長すぎないように制限 */
+	#root {
+	  height: auto;
+	  overflow-y: auto;
+	}
+  }
