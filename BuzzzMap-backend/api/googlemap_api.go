@@ -4,12 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 // Places APIのレスポンス構造体
@@ -35,10 +32,6 @@ type PlacesResponse struct {
 
 // Google Places APIを呼び出し、レストランデータを取得
 func (a *Api) FetchRestaurantsByLocation(keyword, lat, lng string) (PlacesResponse, error) {
-	env := godotenv.Load()
-	if env != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	apiKey := os.Getenv("GOOGLE_API_KEY")
 

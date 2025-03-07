@@ -5,11 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type PerplexityResponse struct {
@@ -34,12 +31,6 @@ func (a *Api) CallPerplexityAPI(query []TrendingSearch) ([]Item, error) {
 
 	var items []Item // 結果を格納するスライス
 	rank := 0
-
-	// .envファイルを読み込む
-	env := godotenv.Load()
-	if env != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	apiKey := os.Getenv("API_KEY")
 

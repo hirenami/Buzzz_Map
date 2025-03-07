@@ -1,8 +1,6 @@
 package api
 
-type Api struct {
-	//dao *dao.Dao
-}
+type Api struct {}
 
 func NewApi() *Api {
 	return &Api{}

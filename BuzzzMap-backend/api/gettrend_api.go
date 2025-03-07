@@ -2,10 +2,8 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	g "github.com/serpapi/google-search-results-golang"
 )
 
@@ -20,11 +18,6 @@ func (a *Api) GetTrend() ([]TrendingSearch, error) {
 		"engine": "google_trends_trending_now",
 		"geo":    "JP",
 		"hours":  "168",
-	}
-
-	env := godotenv.Load()
-	if env != nil {
-		log.Fatal("Error loading .env file")
 	}
 
 	apiKey := os.Getenv("SERP_API_KEY")

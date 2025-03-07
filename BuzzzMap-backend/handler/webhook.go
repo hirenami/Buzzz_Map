@@ -8,23 +8,17 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	svix "github.com/svix/svix-webhooks/go"
 )
 
 type WebhookPayload struct {
 	Type string `json:"type"`
-	Data  struct {
+	Data struct {
 		ID string `json:"id"`
 	} `json:"data"`
 }
 
 func (h *Handler) WebhookHandler(w http.ResponseWriter, r *http.Request) {
-	// ClerkのWebhookリクエストを検証するためのシークレットキーを取得
-	env := godotenv.Load()
-	if env != nil {
-		log.Fatal("Error loading .env file")
-	}
 	signingSecret := os.Getenv("CLERK_WEBHOOK_SECRET")
 	if signingSecret == "" {
 		http.Error(w, "Webhook signing secret not set", http.StatusInternalServerError)

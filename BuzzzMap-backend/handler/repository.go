@@ -4,10 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"log"
-
 	"github.com/hirenami/Buzzz_Map/BuzzzMap-backend/usecase"
-	"github.com/joho/godotenv"
 )
 
 type Handler struct {
@@ -21,10 +18,6 @@ func Newhandler(usecase *usecase.Usecase) *Handler {
 }
 
 func setCORSHeaders(w http.ResponseWriter) {
-	env := godotenv.Load()
-	if env != nil {
-		log.Println("Error loading .env file_cors")
-	}
 	host := os.Getenv("LOCALHOST")
 
 	w.Header().Set("Access-Control-Allow-Origin", host)

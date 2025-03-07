@@ -3,10 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 // Google Places APIから取得した結果をレストラン型に変換
@@ -17,11 +14,6 @@ func (u *Usecase) MapGooglePlacesToRestaurants(ctx context.Context, keyword, lat
 	places, err := u.api.FetchRestaurantsByLocation(keyword, lat, lng)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch restaurants: %w", err)
-	}
-
-	// .envファイルを読み込む
-	if err := godotenv.Load(); err != nil {
-		log.Printf("Warning: Error loading .env file: %v", err)
 	}
 
 	// APIキーを取得

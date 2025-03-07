@@ -30,3 +30,23 @@ func (h *Handler) GetTrend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (h *Handler) SaveTrend(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		setCORSHeaders(w)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	setCORSHeaders(w)
+
+	ctx := context.Background()
+
+	err := h.Usecase.SaveTrend(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}

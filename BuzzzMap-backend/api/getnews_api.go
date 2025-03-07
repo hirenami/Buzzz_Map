@@ -5,35 +5,27 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	g "github.com/serpapi/google-search-results-golang"
 )
 
 // NewsArticleはフロントエンドのインターフェースに合わせたニュース記事のデータ構造
 type NewsArticle struct {
-	ID        string `json:"id"`
-	Title     string `json:"title"`
-	Source    string `json:"source"`
-	Date      string `json:"date"`
-	ImageURL  string `json:"imageUrl"`
-	URL       string `json:"url"`
-	Keyword   string `json:"keyword"`
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	Source   string `json:"source"`
+	Date     string `json:"date"`
+	ImageURL string `json:"imageUrl"`
+	URL      string `json:"url"`
+	Keyword  string `json:"keyword"`
 }
 
 func (a *Api) GetNews(query string) ([]NewsArticle, error) {
 	parameter := map[string]string{
 		"engine": "google_news",
 		"q":      query,
-		"gl":     "jp",  // 日本
-		"hl":     "ja",  // 日本語
+		"gl":     "jp", // 日本
+		"hl":     "ja", // 日本語
 	}
-
-	// .envファイルの読み込み
-	env := godotenv.Load()
-	if env != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	// APIキーの取得
 	apiKey := os.Getenv("SERP_API_KEY")
 
