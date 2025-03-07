@@ -19,6 +19,10 @@ const Map: React.FC<MapProps> = ({
 }) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [directionsService, setDirectionsService] =
+        useState<google.maps.DirectionsService | null>(null);
+    const [directionsRenderer, setDirectionsRenderer] =
+        useState<google.maps.DirectionsRenderer | null>(null);
     const [, setMarkers] = useState<google.maps.Marker[]>([]);
     const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
         null
@@ -27,6 +31,66 @@ const Map: React.FC<MapProps> = ({
     const [activeInfoWindow, setActiveInfoWindow] = useState<string | null>(
         null
     );
+
+    const handleDetailButtonClick = (restaurant: Restaurant) => {
+        if (onMarkerClick) {
+            onMarkerClick(restaurant);
+        }
+
+        // 現在地の取得
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    const userLocation = new google.maps.LatLng(
+                        userLat,
+                        userLng
+                    );
+
+                    // レストランの位置（目的地）
+                    const destination = new google.maps.LatLng(
+                        restaurant.lat,
+                        restaurant.lng
+                    );
+
+                    // 経路リクエストを作成
+                    const request = {
+                        origin: userLocation, // ユーザーの現在地
+                        destination: destination, // クリックされたレストランの位置
+                        travelMode: google.maps.TravelMode.DRIVING, // 車での経路を指定
+                    };
+
+                    // DirectionsServiceを使って経路を取得
+                    if (directionsService && directionsRenderer) {
+                        directionsService.route(request, (result, status) => {
+                            if (status === google.maps.DirectionsStatus.OK) {
+                                directionsRenderer.setDirections(result); // 経路を地図に表示
+                            } else {
+                                console.error(
+                                    "経路の取得に失敗しました: ",
+                                    status
+                                );
+                            }
+                        });
+                    }
+                },
+                (error) => {
+                    console.error(
+                        "ユーザーの現在地取得に失敗しました: ",
+                        error
+                    );
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+
+        // 経路表示が完了した後に infoWindow を閉じる
+        if (infoWindow) {
+            infoWindow.close();
+        }
+    };
     // Initialize Google Maps
     useEffect(() => {
         const initMap = async () => {
@@ -174,6 +238,14 @@ const Map: React.FC<MapProps> = ({
                         mapOptions
                     );
                     setMap(newMap);
+                    const newDirectionsService =
+                        new google.maps.DirectionsService();
+                    setDirectionsService(newDirectionsService);
+
+                    const newDirectionsRenderer =
+                        new google.maps.DirectionsRenderer();
+                    newDirectionsRenderer.setMap(newMap);
+                    setDirectionsRenderer(newDirectionsRenderer);
 
                     // Create a custom info window
                     const newInfoWindow = new google.maps.InfoWindow({
@@ -209,46 +281,46 @@ const Map: React.FC<MapProps> = ({
 
     // Add markers for restaurants
     useEffect(() => {
-		// Helper function to create custom marker with label
-		const updateMarkerIcon = (
-			marker: google.maps.Marker,
-			restaurant: Restaurant,
-			activeKeyword: string | null,
-			index: number,
-			showCategoryLabels: boolean
-		) => {
-			const colorList = [
-				"#4CAF50", // Green
-				"#FF9800", // Orange
-				"#F44336", // Red
-				"#9C27B0", // Purple
-				"#FF5722", // Deep Orange
-				"#795548", // Brown
-				"#8BC34A", // Light Green
-				"#E91E63", // Pink
-				"#673AB7", // Deep Purple
-				"#009688", // Teal
-				// 他にも色を追加可能
-			];
-	
-			// キーワードごとに色を割り当てる
-			const getCategoryColor = (index: number): string => {
-				// 色リストのインデックスに基づいて色を取得（順番に割り当て）
-				return colorList[index % colorList.length]; // 配列の長さを超えたら再利用
-			};
-	
-			// Calculate vertical offset to prevent overlapping labels
-			const labelOriginY = index % 2 === 0 ? 35 : 45;
-	
-			// Format rating to show one decimal place
-			const formattedRating = restaurant.rating.toFixed(1);
-	
-			if (activeKeyword && activeKeyword !== "all") {
-				// Get color based on trend keyword
-				const markerColor = getCategoryColor(index);
-	
-				// Create pin SVG with rating number with one decimal place
-				const pinSVG = `
+        // Helper function to create custom marker with label
+        const updateMarkerIcon = (
+            marker: google.maps.Marker,
+            restaurant: Restaurant,
+            activeKeyword: string | null,
+            index: number,
+            showCategoryLabels: boolean
+        ) => {
+            const colorList = [
+                "#4CAF50", // Green
+                "#FF9800", // Orange
+                "#F44336", // Red
+                "#9C27B0", // Purple
+                "#FF5722", // Deep Orange
+                "#795548", // Brown
+                "#8BC34A", // Light Green
+                "#E91E63", // Pink
+                "#673AB7", // Deep Purple
+                "#009688", // Teal
+                // 他にも色を追加可能
+            ];
+
+            // キーワードごとに色を割り当てる
+            const getCategoryColor = (index: number): string => {
+                // 色リストのインデックスに基づいて色を取得（順番に割り当て）
+                return colorList[index % colorList.length]; // 配列の長さを超えたら再利用
+            };
+
+            // Calculate vertical offset to prevent overlapping labels
+            const labelOriginY = index % 2 === 0 ? 35 : 45;
+
+            // Format rating to show one decimal place
+            const formattedRating = restaurant.rating.toFixed(1);
+
+            if (activeKeyword && activeKeyword !== "all") {
+                // Get color based on trend keyword
+                const markerColor = getCategoryColor(index);
+
+                // Create pin SVG with rating number with one decimal place
+                const pinSVG = `
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
 			  <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
 				<feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3"/>
@@ -259,50 +331,50 @@ const Map: React.FC<MapProps> = ({
 			  <text x="12" y="15" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle" fill="${markerColor}">${formattedRating}</text>
 			</svg>
 		  `;
-	
-				// Convert SVG to data URL
-				const svgUrl =
-					"data:image/svg+xml;charset=UTF-8," +
-					encodeURIComponent(pinSVG);
-	
-				// Set custom icon
-				marker.setIcon({
-					url: svgUrl,
-					scaledSize: new google.maps.Size(30, 45),
-					origin: new google.maps.Point(0, 0),
-					anchor: new google.maps.Point(15, 45),
-					labelOrigin: new google.maps.Point(15, labelOriginY),
-				});
-	
-				// Get the summarized restaurant name
-				let displayName = restaurant.name;
-				if (restaurant.name.length > 8) {
-					displayName = restaurant.name.substring(0, 7) + "…";
-				}
-	
-				// Add label with restaurant name and more transparent background
-				marker.setLabel({
-					text: displayName,
-					color: "#333333",
-					fontSize: "10px",
-					fontWeight: "bold",
-					className: `marker-label marker-label-${
-						index % 2
-					} marker-label-transparent`,
-				});
-	
-				// Set z-index to bring selected markers to front
-				if (activeInfoWindow === restaurant.id) {
-					marker.setZIndex(1000);
-				} else {
-					marker.setZIndex(100);
-				}
-			} else {
-				// For "all" categories, use category-colored markers
-				const markerColor = getCategoryColor(index);
-	
-				// Create category pin SVG with rating number with one decimal place
-				const categoryPinSVG = `
+
+                // Convert SVG to data URL
+                const svgUrl =
+                    "data:image/svg+xml;charset=UTF-8," +
+                    encodeURIComponent(pinSVG);
+
+                // Set custom icon
+                marker.setIcon({
+                    url: svgUrl,
+                    scaledSize: new google.maps.Size(30, 45),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(15, 45),
+                    labelOrigin: new google.maps.Point(15, labelOriginY),
+                });
+
+                // Get the summarized restaurant name
+                let displayName = restaurant.name;
+                if (restaurant.name.length > 8) {
+                    displayName = restaurant.name.substring(0, 7) + "…";
+                }
+
+                // Add label with restaurant name and more transparent background
+                marker.setLabel({
+                    text: displayName,
+                    color: "#333333",
+                    fontSize: "10px",
+                    fontWeight: "bold",
+                    className: `marker-label marker-label-${
+                        index % 2
+                    } marker-label-transparent`,
+                });
+
+                // Set z-index to bring selected markers to front
+                if (activeInfoWindow === restaurant.id) {
+                    marker.setZIndex(1000);
+                } else {
+                    marker.setZIndex(100);
+                }
+            } else {
+                // For "all" categories, use category-colored markers
+                const markerColor = getCategoryColor(index);
+
+                // Create category pin SVG with rating number with one decimal place
+                const categoryPinSVG = `
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
 			  <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
 				<feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.3"/>
@@ -313,46 +385,46 @@ const Map: React.FC<MapProps> = ({
 			  <text x="12" y="15" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle" fill="${markerColor}">${formattedRating}</text>
 			</svg>
 		  `;
-	
-				// Convert SVG to data URL
-				const categoryPinUrl =
-					"data:image/svg+xml;charset=UTF-8," +
-					encodeURIComponent(categoryPinSVG);
-	
-				// Set custom icon
-				marker.setIcon({
-					url: categoryPinUrl,
-					scaledSize: new google.maps.Size(30, 45),
-					origin: new google.maps.Point(0, 0),
-					anchor: new google.maps.Point(15, 45),
-					labelOrigin: new google.maps.Point(15, labelOriginY),
-				});
-	
-				if (activeKeyword && !showCategoryLabels) {
-					marker.setLabel({
-						text: restaurant.trendkeyword,
-						color: "#333333",
-						fontSize: "10px",
-						fontWeight: "bold",
-						className: `marker-label marker-label-${
-							index % 2
-						} marker-label-transparent`,
-					});
-				} else if (showCategoryLabels) {
-					marker.setLabel({
-						text: restaurant.trendkeyword,
-						color: "#333333",
-						fontSize: "10px",
-						fontWeight: "bold",
-						className: `marker-label marker-label-${
-							index % 2
-						} marker-label-transparent`,
-					});
-				} else {
-					marker.setLabel(null);
-				}
-			}
-		};
+
+                // Convert SVG to data URL
+                const categoryPinUrl =
+                    "data:image/svg+xml;charset=UTF-8," +
+                    encodeURIComponent(categoryPinSVG);
+
+                // Set custom icon
+                marker.setIcon({
+                    url: categoryPinUrl,
+                    scaledSize: new google.maps.Size(30, 45),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(15, 45),
+                    labelOrigin: new google.maps.Point(15, labelOriginY),
+                });
+
+                if (activeKeyword && !showCategoryLabels) {
+                    marker.setLabel({
+                        text: restaurant.trendkeyword,
+                        color: "#333333",
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                        className: `marker-label marker-label-${
+                            index % 2
+                        } marker-label-transparent`,
+                    });
+                } else if (showCategoryLabels) {
+                    marker.setLabel({
+                        text: restaurant.trendkeyword,
+                        color: "#333333",
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                        className: `marker-label marker-label-${
+                            index % 2
+                        } marker-label-transparent`,
+                    });
+                } else {
+                    marker.setLabel(null);
+                }
+            }
+        };
         if (!map || !restaurants.length) return;
 
         // Keep track of current restaurant IDs
@@ -479,6 +551,7 @@ const Map: React.FC<MapProps> = ({
                                 detailButton.addEventListener("click", (e) => {
                                     e.preventDefault();
                                     if (onMarkerClick) {
+										handleDetailButtonClick(restaurant);
                                         onMarkerClick(restaurant);
                                         infoWindow.close();
                                     }
@@ -520,15 +593,7 @@ const Map: React.FC<MapProps> = ({
         return () => {
             // Cleanup is handled by the marker tracking system
         };
-    }, [
-        map,
-        infoWindow,
-        onMarkerClick,
-        restaurants,
-        activeKeyword,
-        showCategoryLabels,
-		activeInfoWindow
-    ]);
+    }, [map, restaurants, activeKeyword, showCategoryLabels]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className="relative w-full h-full">
