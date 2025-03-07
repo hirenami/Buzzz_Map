@@ -18,6 +18,19 @@ type Bookmark struct {
 	BookmarksIsrealdata   bool    `json:"bookmarks_isrealdata"`
 }
 
+type Category struct {
+	CategoryID   string `json:"category_id"`
+	CategoryName string `json:"category_name"`
+}
+
+type Longtrend struct {
+	TrendsID                 []byte `json:"trends_id"`
+	TrendsName               string `json:"trends_name"`
+	TrendsLocation           string `json:"trends_location"`
+	TrendsMonths             int32  `json:"trends_months"`
+	TrendsIncreasePercentage int32  `json:"trends_increase_percentage"`
+}
+
 type Trend struct {
 	TrendsID                 []byte `json:"trends_id"`
 	TrendsName               string `json:"trends_name"`

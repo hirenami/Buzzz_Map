@@ -8,6 +8,13 @@ type Trend struct {
 	TrendsIncreasePercentage int32  `json:"increase_percentage"`
 }
 
+type LongTrend struct {
+	TrendName string `json:"keyword"`
+	TrendsLocation  string `json:"location"`
+	TrendsMonths   int32  `json:"months"`
+	TrendsIncreasePercentage int32  `json:"increase_percentage"`
+}
+
 type Restaurant struct {
 	ID           string  `json:"id"`
 	Name         string  `json:"name"`

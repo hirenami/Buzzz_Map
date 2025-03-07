@@ -33,3 +33,29 @@ func (d *Dao) DeleteTrend(ctx context.Context, tx *sql.Tx) error {
 	return txQueries.DeleteTrend(ctx)
 
 }
+
+func (d *Dao) SaveLongTrend(ctx context.Context, tx *sql.Tx, trendName, trendLocation string, trendmonths, trendIncreasepercentage int32) error {
+
+	args := sqlc.SaveLongTrendParams{
+		TrendsName:               trendName,
+		TrendsLocation:           trendLocation,
+		TrendsMonths:             trendmonths,
+		TrendsIncreasePercentage: trendIncreasepercentage,
+	}
+
+	return d.WithTx(tx).SaveLongTrend(ctx, args)
+}
+
+func (d *Dao) DeleteLongTrend(ctx context.Context, tx *sql.Tx) error {
+	txQueries := d.WithTx(tx)
+
+	return txQueries.DeleteLongTrend(ctx)
+
+}
+
+func (d *Dao) GetLongTrend(ctx context.Context, tx *sql.Tx) ([]sqlc.Longtrend,error){
+	txQueries := d.WithTx(tx)
+
+	return txQueries.GetLongTrend(ctx)
+
+}
