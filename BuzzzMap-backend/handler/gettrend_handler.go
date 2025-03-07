@@ -95,3 +95,29 @@ func (h *Handler) GetLongTrend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (h *Handler) TrrigerTrend(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		setCORSHeaders(w)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	setCORSHeaders(w)
+
+	ctx := context.Background()
+
+	err := h.Usecase.SaveTrend(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = h.Usecase.SaveLongTrend(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
