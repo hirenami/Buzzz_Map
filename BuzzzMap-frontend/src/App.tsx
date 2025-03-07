@@ -60,7 +60,6 @@ function App() {
                     const locations = data.map(
                         (trend: TrendingKeyword) => trend.location
                     );
-                    console.log("locations:", locations);
 
                     // Fetch restaurants for each keyword (fetch more per keyword for initial load)
                     const allRestaurantsPromises = locations.map(
@@ -69,13 +68,11 @@ function App() {
                     );
 
                     const results = await Promise.all(allRestaurantsPromises);
-                    console.log("Results from mapService:", results);
 
                     // Flatten the array of arrays
                     const allRestaurants = results
                         .flat()
                         .filter((item) => item !== null);
-                    console.log("Flattened Restaurants:", allRestaurants);
 
                     setRestaurants(allRestaurants);
 
