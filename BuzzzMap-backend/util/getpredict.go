@@ -5,7 +5,7 @@ import (
 	"hash/fnv"
 	"math/rand"
 )
-
+//データがない場合に予測データを生成する
 func GeneratePredict(userID string, maxNumber int) ([]int, error) {
 
 	hasher := fnv.New64()
