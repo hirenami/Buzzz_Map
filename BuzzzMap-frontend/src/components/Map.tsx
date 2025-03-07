@@ -536,7 +536,7 @@ const Map: React.FC<MapProps> = ({
                 </div>
                 <div class="mt-2">
                   <button class="text-xs bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded-full transition-colors shadow-sm w-full" data-action="details">
-                    詳細を見る
+                    経路を見る
                   </button>
                 </div>
               </div>

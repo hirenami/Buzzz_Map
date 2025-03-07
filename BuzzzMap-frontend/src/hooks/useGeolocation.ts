@@ -17,21 +17,7 @@ export const useGeolocation = () => {
   });
 
   useEffect(() => {
-    // 渋谷、東京の固定位置
-    const shibuyaLocation = {
-      lat: 35.6580,
-      lng: 139.7016
-    };
-    
-    // 位置情報の代わりに固定位置を使用
-    setState({
-      loading: false,
-      error: null,
-      position: shibuyaLocation,
-    });
-    
-    // 元の位置情報コードは以下にコメントアウトされています
-    /*
+
     if (!navigator.geolocation) {
       setState({
         loading: false,
@@ -60,7 +46,6 @@ export const useGeolocation = () => {
         });
       }
     );
-    */
   }, []);
 
   return state;

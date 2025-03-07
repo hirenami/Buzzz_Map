@@ -6,6 +6,7 @@ import RestaurantList from "./RestaurantList";
 import EventList from "./EventList"; // Make sure EventList is defined and imported
 import { mapService } from "../services/mapService";
 import MiniMap from "./MiniMap";
+import { useGeolocation } from "../hooks/useGeolocation";
 
 interface TrendingListProps {
     keywords: TrendingKeyword[];
@@ -22,6 +23,7 @@ const TrendingList: React.FC<TrendingListProps> = ({
     onMapClick,
     activeMode,
 }) => {
+    const { position } = useGeolocation();
     const [isVisible, setIsVisible] = useState(false);
     const [prevKeyword, setPrevKeyword] = useState<string | null>(
         activeKeyword
@@ -113,17 +115,20 @@ const TrendingList: React.FC<TrendingListProps> = ({
         setViewMode("articles");
     };
 
+    const defaultLocation = { lat: 35.658, lng: 139.7016 };
+
+    // Current map center
+    const mapCenter = position || defaultLocation;
+
     const handleStoreClick = async (keyword: string) => {
         setSelectedKeyword(keyword);
         setIsLoading(true);
 
         try {
-            const defaultLocation = { lat: 35.658, lng: 139.7016 };
-
             const fetchedRestaurants = await mapService(
                 keyword,
-                defaultLocation.lat,
-                defaultLocation.lng,
+                mapCenter.lat,
+                mapCenter.lng,
                 10
             );
 
@@ -179,10 +184,12 @@ const TrendingList: React.FC<TrendingListProps> = ({
         );
     }
 
+	const onBackClick = () => {
+        setViewMode("keywords"); // 戻るボタンがクリックされたときの処理
+    };
+
     if (viewMode === "restaurants" && selectedKeyword) {
-		
-        return (
-			restaurants ? (
+        return restaurants ? (
             <div className="h-full flex flex-col">
                 <div className="h-1/3 p-2">
                     <MiniMap
@@ -200,11 +207,21 @@ const TrendingList: React.FC<TrendingListProps> = ({
                     />
                 </div>
             </div>
-			) : (
-				<div className="h-full flex items-center justify-center">
-					<p className="text-gray-500 text-sm">データが見つかりませんでした</p>
-				</div>
-			)
+        ) : (
+            <div className="h-full flex items-center justify-center">
+                <div className="flex flex-col items-center">
+                    <p className="text-gray-500 text-sm mb-4">
+                        データが見つかりませんでした
+                    </p>
+                    {/* 戻るボタン */}
+                    <button
+                        onClick={onBackClick} // 親コンポーネントから渡された戻る関数を呼び出す
+                        className="text-blue-500 hover:text-blue-700 text-sm font-semibold"
+                    >
+                        戻る
+                    </button>
+                </div>
+            </div>
         );
     }
 
@@ -217,7 +234,9 @@ const TrendingList: React.FC<TrendingListProps> = ({
             <div className="flex items-center justify-between mb-3 animate-slide-down">
                 <h2 className="text-sm font-bold flex items-center">
                     <TrendingUp className="w-4 h-4 text-red-500 mr-2" />
-                    トレンドフード＆ドリンク
+                    {activeMode === "trend"
+                        ? "トレンドフード＆ドリンク"
+                        : "イベント"}
                 </h2>
             </div>
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Restaurant } from "../types";
 import { MapPin } from "lucide-react";
+import { useGeolocation } from "../hooks/useGeolocation";
 
 interface MiniMapProps {
     restaurants: Restaurant[];
@@ -14,6 +15,7 @@ const MiniMap: React.FC<MiniMapProps> = ({ restaurants, onMapClick }) => {
     const [map, setMap] = useState<google.maps.Map | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const markersRef = useRef<{ [key: string]: google.maps.Marker }>({});
+	const { position } = useGeolocation();
 
     // Initialize Google Maps
     useEffect(() => {
@@ -28,14 +30,11 @@ const MiniMap: React.FC<MiniMapProps> = ({ restaurants, onMapClick }) => {
             try {
                 const google = await loader.load();
 
-                // Default location (Shibuya, Tokyo)
-                const defaultLocation = { lat: 35.658, lng: 139.7016 };
-
                 // If we have restaurants, center on the first one
                 const initialCenter =
                     restaurants.length > 0
                         ? { lat: restaurants[0].lat, lng: restaurants[0].lng }
-                        : defaultLocation;
+                        : position;
 
                 const mapOptions = {
                     center: initialCenter,
@@ -190,7 +189,7 @@ const MiniMap: React.FC<MiniMapProps> = ({ restaurants, onMapClick }) => {
         if (!map) {
             initMap();
         }
-    }, [onMapClick, restaurants, map]);
+    }, [onMapClick, restaurants, map, position]);
 
     // Update map center when restaurants change
     useEffect(() => {
