@@ -7,7 +7,7 @@ import ExploreTabHeader from "./components/ExploreTabHeader";
 import ListTabHeader from "./components/ListTabHeader";
 import TrendingList from "./components/TrendingList";
 import TabBar from "./components/TabBar";
-import { Info, ChevronUp } from "lucide-react";
+import { Info } from "lucide-react";
 import getTrend from "./services/getTrend";
 import UserTab from "./components/UserTab";
 
@@ -37,7 +37,6 @@ function App() {
     const [activeEventCategory, setActiveEventCategory] =
         useState<string>("all");
     const autoSwitchIntervalRef = useRef<NodeJS.Timeout | null>(null);
-    const dragHandleRef = useRef<HTMLDivElement>(null);
     const initialDataLoadedRef = useRef<boolean>(false);
 
     // Default location (Shibuya, Tokyo)
@@ -235,16 +234,6 @@ function App() {
         setSelectedRestaurant(null);
     };
 
-    // Handle drag start
-    const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-        setIsDragging(true);
-        if ("touches" in e) {
-            setStartY(e.touches[0].clientY);
-        } else {
-            setStartY(e.clientY);
-        }
-    };
-
     // Add event listeners for drag
     useEffect(() => {
         // Handle drag move
@@ -397,16 +386,6 @@ function App() {
 
             {/* Floating bottom section - Content and Tab Bar */}
             <div className="relative z-10 w-full">
-                {/* Drag handle */}
-                <div
-                    ref={dragHandleRef}
-                    className="w-full h-6 flex items-center justify-center bg-white bg-opacity-90 rounded-t-lg cursor-ns-resize touch-manipulation"
-                    onMouseDown={handleDragStart}
-                    onTouchStart={handleDragStart}
-                >
-                    <div className="w-10 h-1 bg-gray-300 rounded-full"></div>
-                    <ChevronUp className="absolute right-4 h-4 w-4 text-gray-500" />
-                </div>
 
                 {/* Content area */}
                 <div className="bg-white">
@@ -472,6 +451,7 @@ function App() {
                 <UserTab
                     keywords={trending}
                     onKeywordClick={handleKeywordClick}
+					restaurants={restaurants}
                 />
             </div>
         </div>
