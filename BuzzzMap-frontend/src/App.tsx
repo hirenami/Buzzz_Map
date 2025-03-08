@@ -12,12 +12,6 @@ import getTrend from "./services/getTrend";
 import UserTab from "./components/UserTab";
 
 function App() {
-    useEffect(() => {
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.body.style.overflow = "auto";
-        };
-    }, []);
 
     const { error, position } = useGeolocation();
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
