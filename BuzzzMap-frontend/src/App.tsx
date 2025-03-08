@@ -459,7 +459,7 @@ function App() {
 
     // App content with tab-specific content
     const appContent = (
-        <div className="flex flex-col h-screen relative">
+        <div className="flex flex-col h-screen relative overflow-hidden">
             {/* Show content based on active tab */}
             <div className="flex-1 overflow-hidden">
                 {activeTab === "explore"
