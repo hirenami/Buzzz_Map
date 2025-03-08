@@ -36,7 +36,7 @@ const ListTabHeader: React.FC<ListTabHeaderProps> = ({
             onClick={() => onModeChange('event')}
           >
             <Calendar className="w-3 h-3 mr-1" />
-            <span>期間限定イベント</span>
+            <span>長期トレンド</span>
           </button>
         </div>
       </div>
