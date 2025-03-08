@@ -58,7 +58,7 @@ const Map: React.FC<MapProps> = ({
                     const request = {
                         origin: userLocation, // ユーザーの現在地
                         destination: destination, // クリックされたレストランの位置
-                        travelMode: google.maps.TravelMode.DRIVING, // 車での経路を指定
+                        travelMode: google.maps.TravelMode.WALKING, // 徒歩
                     };
 
                     // DirectionsServiceを使って経路を取得
