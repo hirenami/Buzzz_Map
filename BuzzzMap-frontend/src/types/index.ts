@@ -34,6 +34,7 @@ export interface MapOptions {
 	rotateControl: boolean;
 	scaleControl: boolean;
 	disableDefaultUI: boolean;
+	gestureHandling: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	styles: any[];
 }
