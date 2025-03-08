@@ -115,7 +115,6 @@ const Map: React.FC<MapProps> = ({
                     scaleControl: false, // Disable scale control
                     scrollwheel: true, // Allow scrollwheel zoom
                     disableDefaultUI: true, // Disable all default UI controls
-					gestureHandling: 'cooperative',
                     styles: [
                         {
                             featureType: "all",
