@@ -12,7 +12,6 @@ import getTrend from "./services/getTrend";
 import UserTab from "./components/UserTab";
 
 function App() {
-
     const { error, position } = useGeolocation();
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [filteredRestaurants, setFilteredRestaurants] = useState<
@@ -194,8 +193,8 @@ function App() {
     // Handle restaurant selection
     const handleRestaurantClick = (restaurant: Restaurant) => {
         setSelectedRestaurant(restaurant);
-        console.log("Selected Restaurant:", restaurant);
-        console.log("activeTab:", activeTab);
+		console.log("Selected Restaurant:", restaurant);
+		console.log("activeTab:", activeTab);
 
         // If we're in the trending tab, switch to the explore tab to show the restaurant on the map
         if (activeTab === "trending") {
@@ -387,6 +386,7 @@ function App() {
 
             {/* Floating bottom section - Content and Tab Bar */}
             <div className="relative z-10 w-full">
+
                 {/* Content area */}
                 <div className="bg-white">
                     {error && !position && (
@@ -451,7 +451,7 @@ function App() {
                 <UserTab
                     keywords={trending}
                     onKeywordClick={handleKeywordClick}
-                    restaurants={restaurants}
+					restaurants={restaurants}
                 />
             </div>
         </div>
@@ -459,9 +459,9 @@ function App() {
 
     // App content with tab-specific content
     const appContent = (
-        <div className="flex flex-col h-screen overflow-hidden relative">
-            {/* コンテンツ表示部分 */}
-            <div className="flex-1">
+        <div className="flex flex-col h-screen relative">
+            {/* Show content based on active tab */}
+            <div className="flex-1 overflow-hidden">
                 {activeTab === "explore"
                     ? exploreTabContent
                     : activeTab === "trending"
@@ -469,13 +469,8 @@ function App() {
                     : userTabContent}
             </div>
 
-            {/* タブバー固定 */}
-            <div
-                className="fixed bottom-0 left-0 right-0 w-full z-50"
-				style={{
-				  boxSizing: 'border-box', // padding や border の影響を排除
-				}}
-            >
+            {/* Tab bar fixed at bottom */}
+            <div className="w-full">
                 <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
             </div>
         </div>
