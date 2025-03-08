@@ -471,8 +471,11 @@ function App() {
 
             {/* タブバー固定 */}
             <div
-                className="fixed bottom-0 w-full z-50"
-                style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+                className="fixed bottom-0 left-0 right-0 w-full z-50"
+				style={{
+				  paddingBottom: 'env(safe-area-inset-bottom)',
+				  boxSizing: 'border-box', // padding や border の影響を排除
+				}}
             >
                 <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
             </div>
